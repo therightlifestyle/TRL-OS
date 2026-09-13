@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TRL Lead OS Private v6.0 — Agency Grade · Fully Custom</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@700;800&display=swap');
+:root{--black:#0A0A0A;--white:#fff;--gray-50:#F9FAFB;--gray-100:#F3F4F6;--gray-200:#E5E7EB;--gray-300:#D1D5DB;--gray-500:#6B7280;--gray-600:#4B5563;--gray-900:#111827;--blue:#0066FF;--blue-50:#EFF6FF;--blue-100:#DBEAFE;--navy:#0A1931;--red:#DC2626;--red-50:#FEF2F2;--red-100:#FECACA;--amber:#D97706;--amber-50:#FFFBEB;--amber-100:#FDE68A;--green:#059669;--green-50:#ECFDF5;--green-100:#A7F3D0;--radius:16px;--shadow:0 1px 3px rgba(0,0,0,0.08),0 12px 24px rgba(0,0,0,0.06);--shadow-lg:0 12px 40px rgba(0,0,0,0.14)}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Inter',system-ui,sans-serif;background:#fff;color:var(--gray-900);line-height:1.5}
+h1,h2,h3{font-family:'Sora',sans-serif;letter-spacing:-0.02em}
+.container{max-width:1160px;margin:0 auto;padding:0 16px}
+@media(min-width:768px){.container{padding:0 24px}}
+.app{display:flex;min-height:100vh}
+.sidebar{width:260px;background:var(--black);color:#fff;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;transition:width .25s;overflow:hidden;flex-shrink:0}
+.sidebar.collapsed{width:72px}
+.sidebar-head{padding:18px 14px;border-bottom:1px solid rgba(255,255,255,0.08);display:flex;align-items:center;gap:12px}
+.sidebar-head .logo{width:38px;height:38px;background:#fff;color:var(--black);border-radius:10px;display:grid;place-items:center;font-weight:800;font-family:'Sora',sans-serif;flex-shrink:0}
+.sidebar-head-text{line-height:1.1;overflow:hidden;white-space:nowrap}
+.sidebar.collapsed .sidebar-head-text,.sidebar.collapsed .user-meta,.sidebar.collapsed .nav-label,.sidebar.collapsed .nav-count{display:none}
+.sidebar-nav{flex:1;padding:12px 8px;display:grid;gap:6px;align-content:start;overflow:auto}
+.nav-item{display:flex;align-items:center;gap:10px;padding:11px 10px;border-radius:12px;cursor:pointer;font-weight:600;font-size:13px;color:rgba(255,255,255,0.7);border:1px solid transparent;transition:all .15s;white-space:nowrap;overflow:hidden}
+.nav-item:hover{background:rgba(255,255,255,0.07);color:#fff}
+.nav-item.active{background:#fff;color:var(--black)}
+.nav-item .ico{width:28px;height:28px;display:grid;place-items:center;background:rgba(255,255,255,0.1);border-radius:8px;flex-shrink:0}
+.nav-item.active .ico{background:var(--black);color:#fff}
+.sidebar-foot{padding:12px;border-top:1px solid rgba(255,255,255,0.08);display:grid;gap:8px}
+.user-card{display:flex;align-items:center;gap:10px;padding:10px;background:rgba(255,255,255,0.07);border-radius:12px}
+.user-avatar{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--blue),var(--navy));display:grid;place-items:center;font-weight:800;color:#fff;flex-shrink:0}
+.collapse-btn{width:100%;padding:9px;border-radius:10px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.1);color:rgba(255,255,255,0.7);cursor:pointer;font-size:11px;font-weight:700}
+.collapse-btn:hover{background:rgba(255,255,255,0.12);color:#fff}
+.main{flex:1;min-width:0;background:#fff}
+.topbar{position:sticky;top:0;z-index:20;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--gray-200)}
+.topbar-inner{height:60px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-logo{width:32px;height:32px;background:var(--black);color:#fff;border-radius:9px;display:grid;place-items:center;font-weight:800;font-family:'Sora',sans-serif}
+.hamburger{display:none;width:40px;height:40px;border:1px solid var(--gray-200);background:#fff;border-radius:10px;cursor:pointer;place-items:center}
+.hamburger span{width:16px;height:2px;background:var(--black);display:block;position:relative}
+.hamburger span::before,.hamburger span::after{content:"";position:absolute;left:0;right:0;height:2px;background:var(--black)}
+.hamburger span::before{top:-5px}.hamburger span::after{top:5px}
+@media(max-width:1023px){.sidebar{display:none}.hamburger{display:grid}}
+.mobile-drawer{position:fixed;inset:0;z-index:50;display:none}
+.mobile-drawer.open{display:block}
+.drawer-bg{position:absolute;inset:0;background:rgba(0,0,0,0.42);backdrop-filter:blur(2px)}
+.drawer-panel{position:absolute;right:0;top:0;bottom:0;width:min(88vw,360px);background:#fff;padding:18px;display:flex;flex-direction:column;gap:14px;overflow:auto;border-left:1px solid var(--gray-200);box-shadow:var(--shadow-lg)}
+.drawer-panel a{color:var(--gray-900)!important;text-decoration:none!important;background:#fff;border:1px solid var(--gray-200);padding:12px 14px;border-radius:12px;font-weight:700;font-size:13px;display:flex;align-items:center;gap:10px}
+.drawer-panel a:hover{background:var(--gray-50);border-color:var(--gray-300)}
+.drawer-panel a:active{background:var(--gray-100)}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:20;background:rgba(255,255,255,0.96);backdrop-filter:blur(12px);border-top:1px solid var(--gray-200);display:flex;justify-content:space-around;padding:6px 0}
+@media(min-width:1024px){.bottom-nav{display:none}}
+.bottom-nav button{flex:1;display:grid;place-items:center;gap:2px;background:none;border:none;font-size:10px;font-weight:700;color:var(--gray-500);cursor:pointer;padding:6px;text-decoration:none}
+.bottom-nav button.active{color:var(--black)}
+.bottom-nav button i{width:26px;height:26px;display:grid;place-items:center;background:var(--gray-100);border-radius:8px}
+.bottom-nav button.active i{background:var(--black);color:#fff}
+/* Hero is now per-category */
+.hero{padding:28px 0 18px;border-bottom:1px solid var(--gray-200)}
+.hero-grid{display:grid;gap:20px}
+@media(min-width:960px){.hero-grid{grid-template-columns:1.15fr 0.85fr;align-items:center}}
+.eyebrow{font-size:11px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-500);display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.eyebrow i{width:7px;height:7px;background:var(--blue);border-radius:50%}
+.hero h1{font-size:30px;line-height:1.02}
+@media(min-width:768px){.hero h1{font-size:38px}}
+.hero h1 span{background:linear-gradient(135deg,var(--blue),var(--navy));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-size:14px;color:var(--gray-600);margin-top:8px}
+@media(min-width:768px){.hero p{font-size:15px}}
+.btn{padding:11px 16px;border-radius:999px;font-weight:800;font-size:13px;cursor:pointer;border:none;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:var(--black);color:#fff}
+.btn-secondary{background:#fff;color:var(--black);border:1px solid var(--gray-200)}
+.hero-card{background:var(--black);color:#fff;border-radius:18px;padding:18px}
+.momentum{font-family:'Sora',sans-serif;font-size:30px;font-weight:800}
+.progress{height:7px;background:rgba(255,255,255,0.15);border-radius:999px;overflow:hidden;margin:8px 0}
+.progress i{display:block;height:100%;background:var(--blue)}
+/* Shell */
+.shell{padding:18px 0 72px}
+@media(min-width:1024px){.shell{padding-bottom:18px}}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+@media(min-width:768px){.stats{grid-template-columns:repeat(4,1fr)}}
+.stat{border:1px solid var(--gray-200);border-radius:14px;padding:14px;background:#fff}
+.stat-k{font-size:11px;font-weight:800;letter-spacing:0.07em;text-transform:uppercase;color:var(--gray-500)}
+.stat-v{font-family:'Sora',sans-serif;font-size:22px;font-weight:800}
+.tabs{display:flex;gap:6px;border-bottom:1px solid var(--gray-200);overflow:auto;margin-bottom:14px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:11px 12px;font-size:13px;font-weight:800;color:var(--gray-500);border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;background:none;border-top:0;border-left:0;border-right:0;text-decoration:none;flex-shrink:0}
+.tab.active{color:var(--black);border-color:var(--black)}
+.tab span{background:var(--gray-100);padding:2px 7px;border-radius:999px;font-size:11px;color:var(--gray-600)}
+.tab.active span{background:var(--black);color:#fff}
+.category-hero{border-radius:16px;padding:18px;margin-bottom:14px;color:#fff;position:relative;overflow:hidden}
+.category-hero.pipeline{background:var(--black)}
+.category-hero.crm{background:linear-gradient(135deg,var(--black),#1a1a2e)}
+.category-hero.analytics{background:linear-gradient(135deg,var(--navy),#1e3a5f)}
+.category-hero.loop{background:var(--black)}
+.category-hero.day{background:var(--navy)}
+.category-hero.settings{background:var(--gray-900)}
+.toolbar{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+@media(min-width:900px){.toolbar{flex-direction:row;align-items:center;justify-content:space-between}}
+.search{flex:1;display:flex;gap:8px;align-items:center;border:1px solid var(--gray-200);border-radius:999px;padding:8px 12px;max-width:340px}
+.search input{border:none;outline:none;width:100%;font-size:13px}
+.filters{display:flex;gap:6px;flex-wrap:wrap}
+.select{padding:8px 12px;border:1px solid var(--gray-200);border-radius:999px;background:#fff;font-size:12px;font-weight:700}
+.table-wrap{border:1px solid var(--gray-200);border-radius:14px;overflow:hidden;background:#fff}
+.table{width:100%;border-collapse:collapse;font-size:12px}
+.table th{font-size:10px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:var(--gray-500);text-align:left;padding:10px 12px;background:var(--gray-50);border-bottom:1px solid var(--gray-200);white-space:nowrap}
+.table td{padding:10px 12px;border-bottom:1px solid var(--gray-100);vertical-align:top}
+.badge{font-size:10px;font-weight:800;padding:4px 8px;border-radius:999px;border:1px solid transparent}
+.badge-not{background:var(--gray-100);color:var(--gray-600)}
+.badge-sent{background:var(--blue-50);color:var(--blue)}
+.badge-replied{background:var(--amber-50);color:var(--amber)}
+.badge-booked{background:var(--green-50);color:var(--green)}
+.badge-won{background:var(--green);color:#fff}
+.badge-lost{background:var(--black);color:#fff}
+.cards{display:none;gap:10px;padding:10px}
+@media(max-width:767px){.table{display:none}.cards{display:grid}}
+.card{border:1px solid var(--gray-200);border-radius:12px;padding:12px;background:#fff;display:grid;gap:8px}
+.loop-grid{display:grid;gap:10px}
+@media(min-width:768px){.loop-grid{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1100px){.loop-grid{grid-template-columns:repeat(4,1fr)}}
+.loop-card{border:1px solid var(--gray-200);border-radius:14px;padding:12px;background:#fff}
+.loop-card h4{font-size:11px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;display:flex;align-items:center;gap:6px}
+.kanban{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;overflow:auto;padding:12px}
+.kanban-col{min-width:150px;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:12px;padding:8px}
+.chart{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;align-items:end;height:100px}
+.chart-bar{background:var(--blue);border-radius:6px 6px 0 0;min-height:4px}
+.gate{position:fixed;inset:0;z-index:100;background:rgba(249,250,251,0.97);backdrop-filter:blur(16px);display:grid;place-items:center;padding:16px;overflow:auto}
+.gate.hidden{display:none}
+.gate-card{width:100%;max-width:480px;background:#fff;border:1px solid var(--gray-200);border-radius:20px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.14)}
+.gate-hero{padding:16px;background:var(--black);color:#fff;display:flex;align-items:center;gap:12px}
+.gate-body{padding:18px;display:grid;gap:12px}
+.field label{font-size:11px;font-weight:800;color:var(--gray-600);display:block;margin-bottom:5px}
+.input{width:100%;padding:10px 12px;border:1px solid var(--gray-200);border-radius:10px;font-size:13px}
+.btn-w100{width:100%;justify-content:center}
+.error{font-size:12px;color:var(--red);background:var(--red-50);border:1px solid var(--red-100);padding:8px 10px;border-radius:8px;display:none}
+.error.show{display:block}
+.modal{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,0.5);display:none;place-items:center;padding:16px}
+.modal.open{display:grid}
+.modal-card{width:100%;max-width:560px;background:#fff;border-radius:18px;overflow:hidden;max-height:90vh;display:flex;flex-direction:column}
+.modal-head{padding:16px 18px;border-bottom:1px solid var(--gray-200);display:flex;justify-content:space-between;align-items:center}
+.modal-body{padding:16px 18px;overflow:auto;display:grid;gap:12px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+.modal-foot{padding:12px 18px;border-top:1px solid var(--gray-200);display:flex;justify-content:flex-end;gap:8px;background:var(--gray-50)}
+.toasts{position:fixed;right:16px;bottom:72px;z-index:70;display:grid;gap:8px}
+@media(min-width:1024px){.toasts{bottom:16px}}
+.toast{padding:10px 12px;border-radius:10px;background:var(--black);color:#fff;font-size:12px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,0.2)}
+.toast.ok{background:var(--green)} .toast.err{background:var(--red)}
+.agent-fab{position:fixed;right:16px;bottom:84px;z-index:40;width:56px;height:56px;border-radius:16px;background:var(--black);color:#fff;display:grid;place-items:center;cursor:pointer;box-shadow:0 8px 32px rgba(0,0,0,0.2);border:none;font-size:20px}
+@media(min-width:1024px){.agent-fab{right:20px;bottom:20px}}
+.agent-panel{position:fixed;right:16px;bottom:84px;z-index:41;width:min(92vw,400px);height:min(70vh,520px);background:#fff;border:1px solid var(--gray-200);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,0.18);display:none;flex-direction:column;overflow:hidden}
+@media(min-width:1024px){.agent-panel{right:20px;bottom:20px}}
+.agent-panel.open{display:flex}
+.agent-head{padding:12px;background:var(--black);color:#fff;display:flex;align-items:center;gap:10px}
+.agent-roles{display:flex;gap:6px;padding:8px;border-bottom:1px solid var(--gray-200);overflow:auto;background:var(--gray-50)}
+.agent-role{padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap;cursor:pointer;border:1px solid var(--gray-200);background:#fff}
+.agent-role.active{background:var(--black);color:#fff}
+.agent-chat{flex:1;overflow:auto;padding:12px;display:grid;gap:10px;background:#FCFCFD}
+.bubble{max-width:85%;padding:8px 10px;border-radius:12px;font-size:12px;line-height:1.4}
+.bubble-user{margin-left:auto;background:var(--black);color:#fff}
+.bubble-agent{background:#fff;border:1px solid var(--gray-200)}
+.agent-input{padding:10px;border-top:1px solid var(--gray-200);display:flex;gap:8px}
+.agent-input textarea{flex:1;padding:8px 10px;border:1px solid var(--gray-200);border-radius:10px;resize:none;font-size:12px}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar" id="sidebar">
+<div class="sidebar-head"><div class="logo">TRL</div><div class="sidebar-head-text"><div style="font-weight:800;font-family:'Sora',sans-serif">The Right Lifestyle</div><div style="font-size:10px;opacity:0.6">Lead OS · Private</div></div></div>
+<nav class="sidebar-nav">
+<div class="nav-item active" data-tab="leads" onclick="switchTab('leads')"><span class="ico">◈</span><span class="nav-label">Pipeline</span><span class="nav-count" id="sCountLeads">0</span></div>
+<div class="nav-item" data-tab="crm" onclick="switchTab('crm')"><span class="ico">⬡</span><span class="nav-label">CRM</span><span class="nav-count" id="sCountCRM">0</span></div>
+<div class="nav-item" data-tab="analytics" onclick="switchTab('analytics')"><span class="ico">◐</span><span class="nav-label">Analytics</span></div>
+<div class="nav-item" data-tab="loop" onclick="switchTab('loop')"><span class="ico">◉</span><span class="nav-label">Daily Loop</span><span class="nav-count" id="sCountLoop">0</span></div>
+<div class="nav-item" data-tab="day" onclick="switchTab('day')"><span class="ico">◎</span><span class="nav-label">Founder's Day</span></div>
+<div class="nav-item" data-tab="settings" onclick="switchTab('settings')"><span class="ico">⚙</span><span class="nav-label">Settings</span></div>
+</nav>
+<div style="padding:0 8px 8px"><button class="collapse-btn" onclick="toggleSidebar()" id="collapseBtn">◀ Collapse</button></div>
+<div class="sidebar-foot"><div class="user-card"><div class="user-avatar" id="avatarSide">R</div><div class="user-meta"><b id="userNameSide">Builder</b><span id="userEmailSide" style="font-size:11px;opacity:0.7"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8be4edede2e8e2eae7fff9e7f8eef9fde2e8eecbece6eae2e7a5e8e4e6">[email&#160;protected]</a></span></div></div></div>
+</aside>
+<div class="main">
+<div class="topbar"><div class="container topbar-inner"><div class="brand"><div class="brand-logo">TRL</div><div><div style="font-weight:800;font-family:'Sora',sans-serif">TRL Lead OS</div><div style="font-size:10px;color:var(--gray-500);font-weight:700">PRIVATE · 14:00–04:00 PKT</div></div></div><div style="display:flex;gap:8px;align-items:center"><span id="topEmail" style="display:none;font-size:12px;font-weight:600;background:var(--gray-100);padding:6px 10px;border-radius:999px"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="6c030a0a050f050d00181e001f091e1a050f092c0b010d0500420f0301">[email&#160;protected]</a></span><button class="hamburger" aria-label="Menu" onclick="toggleDrawer(true)"><span></span></button></div></div></div>
+<div id="drawer" class="mobile-drawer"><div class="drawer-bg" onclick="toggleDrawer(false)"></div><div class="drawer-panel"><div style="display:flex;justify-content:space-between;align-items:center"><b style="font-family:'Sora',sans-serif">TRL Lead OS</b><button onclick="toggleDrawer(false)" style="width:32px;height:32px;border:1px solid var(--gray-200);background:#fff;border-radius:8px;cursor:pointer">✕</button></div><div style="padding:10px;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:12px;font-size:12px"><b>14:00–04:00 PKT</b> · Private · TRL Operating System<br><span style="color:var(--gray-500)">Every lead: logged → owned → next action</span></div><nav style="display:grid;gap:8px"><a href="#" onclick="toggleDrawer(false);switchTab('leads');return false">◈ Pipeline — deals & leads</a><a href="#" onclick="toggleDrawer(false);switchTab('crm');return false">⬡ CRM — deals & contacts</a><a href="#" onclick="toggleDrawer(false);switchTab('analytics');return false">◐ Analytics — results</a><a href="#" onclick="toggleDrawer(false);switchTab('loop');return false">◉ Daily Loop — 10 min</a><a href="#" onclick="toggleDrawer(false);switchTab('day');return false">◎ Founder's Day — 14:00–04:00</a><a href="#" onclick="toggleDrawer(false);switchTab('settings');return false">⚙ Settings — whole system</a></nav><button onclick="toggleDrawer(false);openGate();return false" style="margin-top:auto;padding:12px;background:var(--black);color:#fff;border-radius:12px;font-weight:800;border:none;cursor:pointer">Secure access →</button></div></div>
+<div id="gate" class="gate"><div class="gate-card" id="gateCard"></div></div>
+<div id="hero" class="hero"><div class="container hero-grid"><div><div class="eyebrow"><i style="display:inline-block;width:7px;height:7px;background:var(--blue);border-radius:50%"></i> <span id="heroEyebrow">Logged → Owned → Next action</span></div><h1 id="heroTitle">The system <span>behind every enquiry.</span></h1><p id="heroDesc">Every name, every conversation, every follow-up lives in one place — with a date. No silent drift.</p><div id="heroActions" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button class="btn btn-primary" onclick="openModal()">+ Add lead</button><button class="btn btn-secondary" onclick="switchTab('loop')">Run loop →</button></div><div class="hero-meta" style="display:flex;gap:10px;margin-top:10px;font-size:12px;font-weight:700;color:var(--gray-500);flex-wrap:wrap"><span><b id="heroTotal">0</b> leads</span><span>·</span><span><b id="heroOverdue" style="color:var(--red)">0</b> overdue</span><span>·</span><span><b id="heroDue" style="color:var(--amber)">0</b> due</span><span>·</span><span id="heroEmail" style="font-size:11px"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="aac5ccccc3c9c3cbc6ded8c6d9cfd8dcc3c9cfeacdc7cbc3c684c9c5c7">[email&#160;protected]</a></span><span id="heroValue" style="display:none">· <b id="heroValueText">$0</b></span></div></div><div id="heroCard" class="hero-card"><div style="display:flex;justify-content:space-between;font-size:11px;opacity:0.7"><span>Daily command</span><b id="todayLabel">—</b></div><div class="momentum" id="momentum">0%</div><div class="progress"><i id="progressBar" style="width:6%"></i></div><div style="display:grid;gap:8px"><div style="display:flex;justify-content:space-between;background:rgba(255,255,255,0.07);padding:8px 10px;border-radius:10px"><span>Priority</span><b id="priorityText">Add first 5</b></div><div style="display:flex;justify-content:space-between;background:rgba(255,255,255,0.07);padding:8px 10px;border-radius:10px"><span>Weekly goal</span><b>10 convos</b></div></div><div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-secondary" style="flex:1;background:rgba(255,255,255,0.1);color:#fff" onclick="seedStarter()">Load 20</button><button class="btn" style="flex:1;background:var(--blue);color:#fff" onclick="switchTab('leads')">Open →</button></div></div></div></div>
+<div id="shell" class="shell" style="display:none"><div class="container">
+<div class="stats"><div class="stat"><div class="stat-k">Total</div><div class="stat-v" id="statTotal">0</div></div><div class="stat"><div class="stat-k">Overdue</div><div class="stat-v" id="statOverdue">0</div></div><div class="stat"><div class="stat-k">Due today</div><div class="stat-v" id="statDue">0</div></div><div class="stat"><div class="stat-k">Next</div><div class="stat-v" id="statNext">0</div></div></div>
+<div class="tabs"><button class="tab active" data-tab="leads" onclick="switchTab('leads')">Pipeline <span id="countLeads">0</span></button><button class="tab" data-tab="crm" onclick="switchTab('crm')">CRM <span id="countCRM">0</span></button><button class="tab" data-tab="analytics" onclick="switchTab('analytics')">Analytics</button><button class="tab" data-tab="loop" onclick="switchTab('loop')">Loop <span id="countLoop">0</span></button><button class="tab" data-tab="day" onclick="switchTab('day')">Day</button><button class="tab" data-tab="settings" onclick="switchTab('settings')">Settings</button></div>
+<div id="tab-leads">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div><div style="font-size:11px;letter-spacing:0.07em;text-transform:uppercase;color:var(--gray-500);font-weight:800">Pipeline · Single source of truth</div><div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:800">Pipeline</div></div><div style="font-size:11px;color:var(--gray-500)">Every lead → logged → owned → next action</div></div>
+<div class="toolbar"><label class="search"><span>⌕</span><input id="search" placeholder="Search name, business..." oninput="render()"></label><div class="filters"><select id="filterStatus" class="select" onchange="render()"><option value="">All statuses</option><option>not contacted</option><option>message sent</option><option>replied</option><option>call booked</option><option>proposal sent</option><option>closed-won</option><option>closed-lost</option></select><select id="filterSource" class="select" onchange="render()"><option value="">All sources</option><option>warm — local business</option><option>warm — creator</option><option>warm — existing contact</option></select><select id="filterDate" class="select" onchange="render()"><option value="">All dates</option><option value="overdue">Overdue</option><option value="today">Due today</option><option value="no-date">No date</option></select><button class="btn btn-secondary" style="padding:8px 12px;font-size:12px" onclick="exportJSON()">Export JSON</button><button class="btn btn-primary" style="padding:8px 12px;font-size:12px" onclick="openModal()">+ Add</button></div></div>
+<div id="bulkBar" style="display:none;align-items:center;gap:8px;padding:10px 12px;background:var(--black);color:#fff;border-radius:12px;margin-bottom:10px"><span id="bulkCount" style="font-weight:800;font-size:12px">0 selected</span><button class="btn btn-secondary" style="padding:6px 10px;font-size:11px;background:#fff;color:#000" onclick="bulkExport()">Export selected</button><button class="btn" style="padding:6px 10px;font-size:11px;background:var(--red);color:#fff" onclick="bulkDelete()">Delete</button><button class="btn btn-ghost" style="padding:6px 10px;font-size:11px;color:#fff" onclick="clearBulk()">Clear</button><span style="margin-left:auto;font-size:11px;opacity:0.7">Agency tools</span></div>
+<div class="table-wrap"><table class="table"><thead><tr><th style="width:28px"><input type="checkbox" id="checkAll" onchange="toggleAll(this.checked)" title="Select all"></th><th>#</th><th>Name</th><th>Business</th><th>Source</th><th>Status</th><th style="white-space:nowrap">Value</th><th>Next action</th><th>Next date</th><th style="width:120px">Actions</th></tr></thead><tbody id="tbody"></tbody></table><div id="cards" class="cards"></div><div id="empty" style="padding:32px;text-align:center;display:none"><h4>No leads yet — Day 0</h4><p style="font-size:12px;color:var(--gray-500);max-width:520px;margin:6px auto">Load 20-name starter or add first lead. Every name ends: call booked / clear no / next action + date.</p><div style="display:flex;gap:8px;justify-content:center"><button class="btn btn-primary" onclick="seedStarter()">Load 20</button><button class="btn btn-secondary" onclick="openModal()">Add lead</button></div></div></div>
+</div>
+<div id="tab-crm" style="display:none">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div><div style="font-size:11px;letter-spacing:0.07em;text-transform:uppercase;color:var(--gray-500);font-weight:800">CRM · Connected to Pipeline</div><div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:800">CRM</div></div><div style="font-size:11px;color:var(--gray-500)">Kanban by status · Value $/PKR</div></div>
+<div class="loop-grid" style="grid-template-columns:1fr 1fr 1fr"><div class="loop-card"><h4>Pipeline value</h4><div id="crmValue" style="font-family:'Sora',sans-serif;font-size:20px;font-weight:800">$0</div><div style="font-size:11px;color:var(--gray-500)">Open deals</div></div><div class="loop-card"><h4>By stage</h4><div id="crmStages" style="display:grid;gap:4px;margin-top:8px;font-size:12px"></div></div><div class="loop-card"><h4>Next 7 days</h4><div id="crmNext7" style="display:grid;gap:6px;margin-top:8px"></div></div></div>
+<div class="table-wrap" style="margin-top:12px"><div style="padding:10px 12px;background:var(--gray-50);border-bottom:1px solid var(--gray-200);display:flex;justify-content:space-between"><b>Kanban — by status</b><span style="font-size:11px;color:var(--gray-500)">Status drives column — connected to Pipeline</span></div><div id="crmKanban" class="kanban"></div></div>
+</div>
+<div id="tab-analytics" style="display:none">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div><div style="font-size:11px;letter-spacing:0.07em;text-transform:uppercase;color:var(--gray-500);font-weight:800">Analytics · North Star</div><div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:800">Analytics</div></div><div style="font-size:11px;color:var(--gray-500)">Time saved + results / month</div></div>
+<div class="loop-grid"><div class="loop-card"><h4>Conversion</h4><div id="anConv" style="font-family:'Sora',sans-serif;font-size:20px;font-weight:800">0%</div><div id="anConvBar" style="height:6px;background:var(--gray-200);border-radius:999px;margin-top:6px"><i style="display:block;height:100%;width:0%;background:var(--blue)"></i></div></div><div class="loop-card"><h4>Reliability</h4><div id="anReli" style="font-family:'Sora',sans-serif;font-size:20px;font-weight:800">0%</div><div id="anReliBar" style="height:6px;background:var(--gray-200);border-radius:999px;margin-top:6px"><i style="display:block;height:100%;width:0%;background:var(--green)"></i></div></div><div class="loop-card"><h4>Health</h4><div id="anHealth" style="font-family:'Sora',sans-serif;font-size:20px;font-weight:800">—</div><div id="anHealthText" style="font-size:11px;color:var(--gray-500)"></div></div><div class="loop-card"><h4>Time saved</h4><div id="anTime" style="font-family:'Sora',sans-serif;font-size:20px;font-weight:800">0h</div><div style="font-size:11px;color:var(--gray-500)">~15m per follow-up</div></div></div>
+<div class="table-wrap" style="padding:12px;margin-top:12px"><h4 style="font-size:11px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase">7-day activity</h4><div id="anChart" class="chart" style="margin-top:10px"></div><div id="anChartLabels" style="display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-top:6px;font-size:10px;color:var(--gray-500);text-align:center"></div></div>
+</div>
+<div id="tab-loop" style="display:none">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div><div style="font-size:11px;letter-spacing:0.07em;text-transform:uppercase;color:var(--gray-500);font-weight:800">Daily Loop · 14:00 PKT · 10 min</div><div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:800">Daily Loop</div></div><button class="btn btn-secondary" style="padding:6px 10px;font-size:11px" onclick="runLoopCheck(true)">Run check ↻</button></div>
+<div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn btn-secondary" style="font-size:12px" onclick="runLoopCheck(true)">Run check ↻</button><span style="font-size:11px;color:var(--gray-500);align-self:center">Red overdue first, then today</span></div>
+<div class="loop-grid"><div class="loop-card"><h4>Overdue (red) <span id="loopCountOverdue" style="margin-left:auto;background:var(--red-50);color:var(--red);padding:2px 6px;border-radius:999px;font-size:11px">0</span></h4><div id="loopOverdue" style="display:grid;gap:6px;margin-top:8px"></div></div><div class="loop-card"><h4>Due today (yellow) <span id="loopCountDue" style="margin-left:auto;background:var(--amber-50);color:var(--amber);padding:2px 6px;border-radius:999px;font-size:11px">0</span></h4><div id="loopDue" style="display:grid;gap:6px;margin-top:8px"></div></div><div class="loop-card"><h4>Next (green) <span id="loopCountNext" style="margin-left:auto;background:var(--green-50);color:var(--green);padding:2px 6px;border-radius:999px;font-size:11px">0</span></h4><div id="loopNext" style="display:grid;gap:6px;margin-top:8px"></div></div><div class="loop-card"><h4>No-date (at risk) <span id="loopCountNoDate" style="margin-left:auto;background:var(--gray-100);padding:2px 6px;border-radius:999px;font-size:11px">0</span></h4><div id="loopNoDate" style="display:grid;gap:6px;margin-top:8px"></div></div></div>
+</div>
+<div id="tab-day" style="display:none">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div><div style="font-size:11px;letter-spacing:0.07em;text-transform:uppercase;color:var(--gray-500);font-weight:800">Founder's Day · 14:00–04:00 PKT</div><div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:800">Founder's Day</div></div><div style="font-size:11px;color:var(--gray-500)">With rest break</div></div>
+<div class="loop-grid"><div class="loop-card" style="grid-column:span 2"><h4>Schedule</h4><div style="display:grid;gap:8px;margin-top:8px"><div style="display:flex;justify-content:space-between;padding:8px;background:var(--green-50);border-radius:8px"><span><b>14:00</b> — Loop</span><b>10m</b></div><div style="display:flex;justify-content:space-between;padding:8px;background:var(--blue-50);border-radius:8px"><span><b>14:15–15:45</b> — Outbound</span><b>90m</b></div><div style="display:flex;justify-content:space-between;padding:8px;background:var(--gray-50);border-radius:8px"><span><b>15:45–16:15</b> — Rest</span><span>30m</span></div><div style="display:flex;justify-content:space-between;padding:8px;border:1px solid var(--gray-200);border-radius:8px"><span><b>16:15–18:30</b> — Delivery</span><span>90–120m</span></div><div style="display:flex;justify-content:space-between;padding:8px;background:var(--navy);color:#fff;border-radius:8px"><span><b>22:00–04:00</b> — Deep work</span><span>~4h</span></div></div></div><div class="loop-card"><h4>Gates</h4><div style="display:grid;gap:8px;margin-top:8px"><div style="padding:10px;background:var(--gray-50);border-radius:10px"><b>GATE 1 — 27 Sep</b><br><span style="font-size:11px;color:var(--gray-500)">14-day habit</span></div><div style="padding:10px;background:var(--gray-50);border-radius:10px"><b>GATE 2 — 13 Oct</b><br><span style="font-size:11px;color:var(--gray-500)">First payment</span></div></div></div><div class="loop-card"><h4>Week-1</h4><div id="weekTargets" style="display:grid;gap:8px;margin-top:8px"></div></div></div>
+</div>
+<div id="tab-settings" style="display:none">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><div><div style="font-size:11px;letter-spacing:0.07em;text-transform:uppercase;color:var(--gray-500);font-weight:800">Settings · Whole system</div><div style="font-family:'Sora',sans-serif;font-size:16px;font-weight:800">Settings</div></div><div style="font-size:11px;color:var(--gray-500)">Profile · Data · Appearance</div></div>
+<div class="loop-grid"><div class="loop-card"><h4>Profile & access</h4><div style="display:grid;gap:8px;margin-top:8px"><div class="field"><label>Display name</label><input id="setName" class="input"></div><div class="field"><label>Email</label><input id="setEmail" class="input" type="email"></div><div class="field"><label>Phone</label><input id="setPhone" class="input"></div><div class="field"><label>Access code</label><input id="setPass" class="input" type="text"></div><button class="btn btn-primary btn-w100" onclick="saveSettings()">Save</button><div id="settingsSaved" style="display:none;padding:8px;background:var(--green-50);border:1px solid var(--green-100);border-radius:8px;font-size:11px;color:var(--green);text-align:center">✓ Saved</div></div></div><div class="loop-card"><h4>Appearance</h4><div style="display:grid;gap:8px;margin-top:8px"><div style="display:flex;justify-content:space-between"><span style="font-size:12px">Sidebar</span><button class="btn btn-secondary" style="padding:6px 10px;font-size:11px" onclick="toggleSidebar()">Toggle collapse</button></div><div style="display:flex;justify-content:space-between"><span style="font-size:12px">Density</span><select id="setDensity" class="select" onchange="setDensity(this.value)"><option value="comfortable">Comfortable</option><option value="compact">Compact</option></select></div></div></div><div class="loop-card"><h4>Pipeline config</h4><div style="font-size:11px;display:grid;gap:6px;margin-top:8px"><div style="padding:8px;background:var(--gray-50);border-radius:8px"><b>Sources:</b> warm local / warm creator / warm contact / warm / cold / referral / inbound</div><div style="padding:8px;background:var(--gray-50);border-radius:8px"><b>Statuses:</b> not contacted → message sent → replied → call booked → proposal sent → closed-won/lost</div><div style="padding:8px;background:var(--gray-50);border-radius:8px"><b>Offers:</b> $35 · $499 · $1,297</div></div></div><div class="loop-card"><h4>Data</h4><div style="display:grid;gap:6px;margin-top:8px"><button class="btn btn-secondary" onclick="exportJSON()">Export JSON</button><button class="btn btn-secondary" onclick="exportCSV()">Export CSV</button><button class="btn btn-secondary" onclick="importJSON()">Import JSON</button><input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)"><button class="btn" style="background:var(--red-50);color:var(--red);border:1px solid var(--red-100)" onclick="confirmClear()">Clear all</button></div></div><div class="loop-card"><h4>Onboarding</h4><div id="onboardingSummary" style="font-size:11px;color:var(--gray-600);margin-top:6px"></div><button class="btn btn-secondary" style="margin-top:8px;padding:6px 10px;font-size:11px" onclick="resetOnboarding()">Reset onboarding</button><button class="btn" style="margin-top:6px;padding:6px 10px;font-size:11px;background:var(--red-50);color:var(--red);border:1px solid var(--red-100);width:100%;" onclick="factoryReset()">⚠ Factory reset — wipe all</button><div style="font-size:10px;color:var(--gray-500);margin-top:4px">Factory clears past IDs/leads too — use if "Open" still shows old data</div></div><div class="loop-card"><h4>About</h4><div style="font-size:11px;color:var(--gray-600);display:grid;gap:4px;margin-top:6px"><div><b>Private v5.0</b> · 14:00–04:00 PKT</div><div>TRL-1 · Micro-audit $35</div><div>Agent 6 roles · offline · no error</div></div></div></div>
+</div>
+</div></div>
+<div style="border-top:1px solid var(--gray-200);padding:12px 0;margin-top:16px;font-size:11px;color:var(--gray-500);text-align:center">TRL Lead OS Private v5.0 · 14:00–04:00 PKT · <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="cea1a8a8a7ada7afa2babca2bdabbcb8a7adab8ea9a3afa7a2e0ada1a3">[email&#160;protected]</a> · 0319 0091457</div>
+</div></div>
+<nav class="bottom-nav"><button data-tab="leads" onclick="switchTab('leads')" class="active"><i>◈</i>Pipe</button><button data-tab="crm" onclick="switchTab('crm')"><i>⬡</i>CRM</button><button data-tab="analytics" onclick="switchTab('analytics')"><i>◐</i>Data</button><button data-tab="loop" onclick="switchTab('loop')"><i>◉</i>Loop</button><button data-tab="day" onclick="switchTab('day')"><i>◎</i>Day</button><button data-tab="settings" onclick="switchTab('settings')"><i>⚙</i>Set</button></nav>
+<div id="modal" class="modal"><div class="modal-card"><div class="modal-head"><div><h3 id="modalTitle" style="font-size:16px">Add lead</h3><div style="font-size:11px;color:var(--gray-500)">Agency-grade · Logged → Owned → Next action</div></div><button onclick="closeModal()" style="width:32px;height:32px;border:1px solid var(--gray-200);background:#fff;border-radius:8px;cursor:pointer">✕</button></div><div class="modal-body"><div class="grid2"><div class="field"><label>Name * <span style="font-weight:400;color:var(--gray-500)">— who?</span></label><input id="fName" class="input" placeholder="Ahmed — Al-Falah Clinic"></div><div class="field"><label>Business / Type</label><input id="fBiz" class="input" placeholder="Clinic · Salon · Gym"></div><div class="field"><label>Source</label><select id="fSource" class="input"><option>warm — local business</option><option>warm — creator</option><option>warm — existing contact</option><option>warm</option><option>cold</option><option>referral</option><option>inbound</option></select></div><div class="field"><label>Status</label><select id="fStatus" class="input" onchange="updateProb()"><option>not contacted</option><option>message sent</option><option>replied</option><option>call booked</option><option>proposal sent</option><option>closed-won</option><option>closed-lost</option></select></div><div class="field"><label>Channel</label><select id="fChannel" class="input"><option>WhatsApp</option><option>Email</option><option>Phone</option><option>In-person</option></select></div><div class="field"><label>Priority</label><select id="fPriority" class="input"><option value="">—</option><option>High</option><option>Medium</option><option>Low</option></select></div><div class="field"><label>Value (USD)</label><input id="fValue" class="input" type="number" placeholder="0" min="0" step="1"></div><div class="field"><label>Offer</label><select id="fOffer" class="input"><option value="">—</option><option>Micro Audit $35</option><option>Automation Sprint $499</option><option>Founder OS $1,297</option></select></div><div class="field"><label>Last contact</label><input id="fLast" class="input" type="date"></div><div class="field" style="grid-column:1/-1"><label>Next action *</label><input id="fNext" class="input" placeholder="Send Day-1 message"></div><div class="field"><label>Next date *</label><input id="fDate" class="input" type="date"></div><div class="field"><label>Probability <span id="probLabel" style="font-weight:400;color:var(--blue)">—</span></label><select id="fProb" class="input"><option value="">Auto (from status)</option><option>10%</option><option>25%</option><option>50%</option><option>75%</option><option>90%</option><option>100%</option></select></div><div class="field" style="grid-column:1/-1"><label>Tags <span style="font-weight:400;color:var(--gray-500)">comma separated</span></label><input id="fTags" class="input" placeholder="clinic, warm, retainer"></div><div class="field" style="grid-column:1/-1"><label>Notes</label><textarea id="fNotes" class="input" style="min-height:64px" placeholder="What did they say? Biggest leak?"></textarea></div></div><div style="padding:10px;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:10px;font-size:11px;color:var(--gray-600)">💡 <b>Agency tip:</b> Every lead ends: <b>call booked / clear no / next action + date</b>. No limbo. Value + Priority drives CRM & Analytics.</div><div id="modalErr" class="error"></div></div><div class="modal-foot"><button class="btn btn-secondary" onclick="closeModal()">Cancel</button><button class="btn btn-primary" onclick="saveLead()">Save lead</button></div></div></div>
+<div id="confirmModal" class="modal"><div class="modal-card" style="max-width:360px"><div class="modal-body" style="text-align:center"><h3 id="confirmTitle">Confirm</h3><p id="confirmText" style="font-size:12px;color:var(--gray-500)"></p></div><div class="modal-foot" style="justify-content:center"><button class="btn btn-secondary" onclick="closeConfirm(false)">Cancel</button><button class="btn btn-primary" style="background:var(--red)" onclick="closeConfirm(true)">Delete</button></div></div></div>
+<div id="toasts" class="toasts"></div>
+<button class="agent-fab" id="agentFab" onclick="toggleAgent(true)">◈</button>
+<div class="agent-panel" id="agentPanel" style="position:fixed;right:16px;bottom:84px;width:min(92vw,380px);height:min(70vh,500px);background:#fff;border:1px solid var(--gray-200);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,0.18);display:none;flex-direction:column;overflow:hidden;z-index:40">
+<div style="padding:12px;background:var(--black);color:#fff;display:flex;align-items:center;gap:10px"><b>TRL Agent · 6 roles</b><span id="agentRoleLabel" style="font-size:11px;opacity:0.7;margin-left:auto">Chief</span><button onclick="toggleAgent(false)" style="background:rgba(255,255,255,0.1);border:none;color:#fff;width:28px;height:28px;border-radius:8px">✕</button></div>
+<div style="display:flex;gap:6px;padding:8px;border-bottom:1px solid var(--gray-200);overflow:auto;background:var(--gray-50)"><button class="agent-role active" data-role="chief" onclick="setAgentRole('chief')" style="padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800;border:1px solid var(--gray-200);background:var(--black);color:#fff">Chief</button><button class="agent-role" data-role="sales" onclick="setAgentRole('sales')" style="padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800;border:1px solid var(--gray-200)">Sales</button><button class="agent-role" data-role="content" onclick="setAgentRole('content')" style="padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800;border:1px solid var(--gray-200)">Content</button><button class="agent-role" data-role="builder" onclick="setAgentRole('builder')" style="padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800;border:1px solid var(--gray-200)">Builder</button><button class="agent-role" data-role="ops" onclick="setAgentRole('ops')" style="padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800;border:1px solid var(--gray-200)">Ops</button><button class="agent-role" data-role="research" onclick="setAgentRole('research')" style="padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800;border:1px solid var(--gray-200)">Research</button></div>
+<div id="agentChat" style="flex:1;overflow:auto;padding:12px;display:grid;gap:10px;background:#FCFCFD"><div id="agentEmpty" style="text-align:center;color:var(--gray-500);font-size:11px"><b>6 roles, one memory. Ask anything.</b><br>Try: What should I do today? / Write Day-1 for salon</div></div>
+<div style="padding:10px;border-top:1px solid var(--gray-200);display:flex;gap:8px"><textarea id="agentInput" placeholder="Ask TRL Agent..." style="flex:1;padding:8px 10px;border:1px solid var(--gray-200);border-radius:10px;resize:none;font-size:12px" rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAgent()}"></textarea><button onclick="sendAgent()" style="width:40px;height:40px;border-radius:10px;background:var(--black);color:#fff;border:none">→</button></div>
+</div>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+const STORAGE_KEY='trl-lead-os-v1', AUTH_KEY='trl-lead-os-auth', ONBOARD_KEY='trl-onboarding', EMAIL_KEY='trl-email', NAME_KEY='trl-name', PHONE_KEY='trl-phone';
+let leads=[], editingId=null, confirmAction=null, onboardData={}, onboardStep=0;
+function todayISO(){return new Date().toISOString().slice(0,10)}
+function load(){try{leads=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]')}catch{leads=[]}leads.forEach((l,i)=>{if(!l.id)l.id=Date.now()+i+Math.random()})}
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(leads))}
+function loadAuth(){try{return JSON.parse(localStorage.getItem(AUTH_KEY)||'{}')}catch{return{}}}
+function saveAuth(o){localStorage.setItem(AUTH_KEY,JSON.stringify(o))}
+function getEmail(){return localStorage.getItem(EMAIL_KEY)||loadAuth().email||'officialtrlservice@gmail.com'}
+function getName(){return localStorage.getItem(NAME_KEY)||loadAuth().name||'Builder'}
+function getPhone(){return localStorage.getItem(PHONE_KEY)||loadAuth().phone||'0319 0091457'}
+function setIdentity(n,e,p,code){if(n)localStorage.setItem(NAME_KEY,n);if(e)localStorage.setItem(EMAIL_KEY,e);if(p)localStorage.setItem(PHONE_KEY,p);const a=loadAuth();saveAuth({name:n||a.name||getName(),email:e||a.email||getEmail(),phone:p||a.phone||getPhone(),pass:code||a.pass||'TRL-2026',onboarded:true});updateIdentityUI()}
+function updateIdentityUI(){const n=getName(),e=getEmail();const ini=n.split(/\s+/).slice(0,2).map(s=>s[0]).join('').toUpperCase()||'R';['avatarSide'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=ini});['userNameSide'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=n});['userEmailSide','heroEmail','topEmail'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=e});}
+function toast(m,t='info'){const c=document.getElementById('toasts');const d=document.createElement('div');d.className='toast '+t;d.textContent=m;c.appendChild(d);setTimeout(()=>{d.style.opacity='0';setTimeout(()=>d.remove(),250)},2500)}
+function toggleDrawer(o){const d=document.getElementById('drawer');if(o)d.classList.add('open');else d.classList.remove('open')}
+function toggleSidebar(){const s=document.getElementById('sidebar');s.classList.toggle('collapsed');const c=s.classList.contains('collapsed');localStorage.setItem('trl-sidebar-collapsed',c?'1':'0');document.getElementById('collapseBtn').textContent=c?'▶ Expand':'◀ Collapse';toast(c?'Collapsed — optimized':'Expanded','info')}
+(function(){const c=localStorage.getItem('trl-sidebar-collapsed');if(c==='1'){const s=document.getElementById('sidebar');if(s)s.classList.add('collapsed');const b=document.getElementById('collapseBtn');if(b)b.textContent='▶ Expand'}})();
+function openGate(){renderGate();document.getElementById('gate').classList.remove('hidden')}
+function renderGate(){
+const auth=loadAuth();const onboard=JSON.parse(localStorage.getItem(ONBOARD_KEY)||'null');const has=!!onboard||auth.onboarded;const card=document.getElementById('gateCard');
+if(has){
+const n=getName(),e=getEmail();
+card.innerHTML=`<div class="gate-hero"><div style="width:36px;height:36px;background:#fff;color:#000;border-radius:9px;display:grid;place-items:center;font-weight:800">TRL</div><div><div style="font-weight:800">Welcome back, ${esc(n)}</div><div style="font-size:11px;opacity:0.7">Lead OS · Remembered</div></div></div><div style="padding:18px;display:grid;gap:12px"><p style="font-size:12px;color:var(--gray-600)">Your OS remembers you by name. Enter your <b>access code you chose</b>.</p><div style="display:flex;gap:10px;align-items:center;padding:10px;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:10px"><div style="width:36px;height:36px;background:linear-gradient(135deg,var(--blue),var(--navy));color:#fff;border-radius:8px;display:grid;place-items:center;font-weight:800">${esc(n.split(/\s+/).slice(0,2).map(s=>s[0]).join('').toUpperCase())}</div><div><b>${esc(n)}</b><br><span style="font-size:11px;color:var(--gray-500)">${esc(e)} · ${esc(getPhone())}</span></div><button class="btn btn-secondary" style="margin-left:auto;padding:6px 10px;font-size:11px" onclick="resetOnboarding()">Not you?</button></div><div class="field"><label>Access code</label><input id="gatePass" type="password" placeholder="Your code" class="input"></div><div class="field"><label>Email</label><input id="gateEmail" type="email" value="${esc(e)}" class="input"></div><div id="gateErr" class="error">Incorrect code</div><button class="btn btn-primary btn-w100" onclick="unlock()">Enter Lead OS →</button><div style="text-align:center"><a href="#" onclick="unlock(true);return false" style="font-size:11px;color:var(--gray-500)">Continue as guest</a> · <a href="#" onclick="resetOnboarding();return false" style="font-size:11px;color:var(--gray-500)">Reset</a></div></div>`;
+setTimeout(()=>{const el=document.getElementById('gatePass');if(el)el.focus()},60);return;
+}
+onboardData=onboard||{name:'',business:'',phone:'',email:'officialtrlservice@gmail.com',handle:'',leak:'',leadsPerWeek:'',goal:'',code:''};onboardStep=0;renderOnboardStep();
+}
+function renderOnboardStep(){
+const card=document.getElementById('gateCard');const total=5;
+const steps=[
+`<div class="gate-hero"><div style="width:36px;height:36px;background:#fff;color:#000;border-radius:9px;display:grid;place-items:center;font-weight:800">TRL</div><div><div style="font-weight:800">TRL Lead OS</div><div style="font-size:11px;opacity:0.7">Operating System Behind Every Enquiry</div></div></div><div style="padding:18px;display:grid;gap:12px"><h2 style="font-size:20px">Your OS, built around you.</h2><p style="font-size:12px;color:var(--gray-600)">3 min — for us to serve you and for you to get value — then choose your own code.</p><div style="display:grid;grid-template-columns:1fr 1fr;gap:8px"><div style="padding:10px;background:var(--gray-50);border-radius:10px"><b>For us</b><br><span style="font-size:11px;color:var(--gray-500)">Business, flow, leak, leads/week</span></div><div style="padding:10px;background:var(--blue-50);border-radius:10px"><b>For you</b><br><span style="font-size:11px;color:var(--gray-500)">#1 outcome, time to save</span></div></div><button class="btn btn-primary btn-w100" onclick="nextOnboard()">Start — 3 min →</button><div style="text-align:center"><a href="#" onclick="quickUnlock();return false" style="font-size:11px;color:var(--gray-500)">Skip, use TRL-2026</a></div></div>`,
+`<div class="gate-hero"><div style="width:36px;height:36px;background:#fff;color:#000;border-radius:9px;display:grid;place-items:center;font-weight:800">TRL</div><div><div style="font-weight:800">Step 1 — Who you are</div><div style="font-size:11px;opacity:0.7">Remembered by name</div></div><div style="margin-left:auto;font-size:11px;background:rgba(255,255,255,0.15);padding:4px 8px;border-radius:999px">1/5</div></div><div style="padding:18px;display:grid;gap:12px"><h2>Let’s remember you.</h2><div class="field"><label>Full name *</label><input id="obName" class="input" value="${esc(onboardData.name)}"></div><div class="field"><label>Business / type *</label><input id="obBusiness" class="input" value="${esc(onboardData.business)}"></div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px"><div class="field"><label>Phone *</label><input id="obPhone" class="input" value="${esc(onboardData.phone)}"></div><div class="field"><label>Email *</label><input id="obEmail" class="input" value="${esc(onboardData.email)}"></div></div><div id="obErr1" class="error"></div><div style="display:flex;gap:8px"><button class="btn btn-secondary" style="flex:1" onclick="prevOnboard()">Back</button><button class="btn btn-primary" style="flex:1" onclick="nextOnboard()">Continue →</button></div></div>`,
+`<div class="gate-hero"><div style="width:36px;height:36px;background:#fff;color:#000;border-radius:9px;display:grid;place-items:center;font-weight:800">TRL</div><div><div style="font-weight:800">Step 2 — For us</div><div style="font-size:11px;opacity:0.7">Your current flow</div></div><div style="margin-left:auto;font-size:11px;background:rgba(255,255,255,0.15);padding:4px 8px;border-radius:999px">2/5</div></div><div style="padding:18px;display:grid;gap:12px"><h2>How do enquiries reach you?</h2><div style="display:grid;gap:6px"><label style="padding:10px;border:1px solid var(--gray-200);border-radius:10px;display:flex;gap:8px"><input type="radio" name="handle" value="WhatsApp manual" ${onboardData.handle==='WhatsApp manual'?'checked':''} onchange="onboardData.handle=this.value"> WhatsApp manual</label><label style="padding:10px;border:1px solid var(--gray-200);border-radius:10px;display:flex;gap:8px"><input type="radio" name="handle" value="Sheets / notes" ${onboardData.handle==='Sheets / notes'?'checked':''} onchange="onboardData.handle=this.value"> Sheets / notes</label><label style="padding:10px;border:1px solid var(--gray-200);border-radius:10px;display:flex;gap:8px"><input type="radio" name="handle" value="No system" ${onboardData.handle==='No system'?'checked':''} onchange="onboardData.handle=this.value"> No system</label><label style="padding:10px;border:1px solid var(--gray-200);border-radius:10px;display:flex;gap:8px"><input type="radio" name="handle" value="Some tool" ${onboardData.handle==='Some tool'?'checked':''} onchange="onboardData.handle=this.value"> Some tool</label></div><div class="field"><label>Biggest leak? *</label><select id="obLeak" class="input"><option value="">Choose</option><option ${onboardData.leak==='Follow-ups forgotten'?'selected':''}>Follow-ups forgotten</option><option ${onboardData.leak==='Slow replies'?'selected':''}>Slow replies</option><option ${onboardData.leak==='Manual booking'?'selected':''}>Manual booking</option><option ${onboardData.leak==='No tracking'?'selected':''}>No tracking</option></select></div><div class="field"><label>Leads/week</label><select id="obLeads" class="input"><option>1–5</option><option>6–15</option><option>16–30</option><option>30+</option></select></div><div id="obErr2" class="error"></div><div style="display:flex;gap:8px"><button class="btn btn-secondary" style="flex:1" onclick="prevOnboard()">Back</button><button class="btn btn-primary" style="flex:1" onclick="nextOnboard()">Continue →</button></div></div>`,
+`<div class="gate-hero"><div style="width:36px;height:36px;background:#fff;color:#000;border-radius:9px;display:grid;place-items:center;font-weight:800">TRL</div><div><div style="font-weight:800">Step 3 — For you</div><div style="font-size:11px;opacity:0.7">Your outcome</div></div><div style="margin-left:auto;font-size:11px;background:rgba(255,255,255,0.15);padding:4px 8px;border-radius:999px">3/5</div></div><div style="padding:18px;display:grid;gap:12px"><h2>What should Lead OS do first?</h2><div style="display:grid;gap:6px"><label style="padding:10px;border:1px solid var(--gray-200);border-radius:10px;display:flex;gap:8px"><input type="radio" name="goal" value="Capture every enquiry" ${onboardData.goal==='Capture every enquiry'?'checked':''} onchange="onboardData.goal=this.value"> Capture every enquiry</label><label style="padding:10px;border:1px solid var(--gray-200);border-radius:10px;display:flex;gap:8px"><input type="radio" name="goal" value="Follow-up that never forgets" ${onboardData.goal==='Follow-up that never forgets'?'checked':''} onchange="onboardData.goal=this.value"> Follow-up never forgets</label><label style="padding:10px;border:1px solid var(--gray-200);border-radius:10px;display:flex;gap:8px"><input type="radio" name="goal" value="Bookings without back-and-forth" ${onboardData.goal==='Bookings without back-and-forth'?'checked':''} onchange="onboardData.goal=this.value"> Bookings without back-and-forth</label><label style="padding:10px;border:1px solid var(--gray-200);border-radius:10px;display:flex;gap:8px"><input type="radio" name="goal" value="Pipeline I can see" ${onboardData.goal==='Pipeline I can see'?'checked':''} onchange="onboardData.goal=this.value"> Pipeline I can see</label></div><div class="field"><label>Success in 30 days</label><input id="obSuccess" class="input" value="${esc(onboardData.success||'')}"></div><div id="obErr3" class="error"></div><div style="display:flex;gap:8px"><button class="btn btn-secondary" style="flex:1" onclick="prevOnboard()">Back</button><button class="btn btn-primary" style="flex:1" onclick="nextOnboard()">Continue →</button></div></div>`,
+`<div class="gate-hero"><div style="width:36px;height:36px;background:#fff;color:#000;border-radius:9px;display:grid;place-items:center;font-weight:800">TRL</div><div><div style="font-weight:800">Step 4 — Your code</div><div style="font-size:11px;opacity:0.7">Choose your code</div></div><div style="margin-left:auto;font-size:11px;background:rgba(255,255,255,0.15);padding:4px 8px;border-radius:999px">4/5</div></div><div style="padding:18px;display:grid;gap:12px"><h2>Choose your code.</h2><p style="font-size:12px;color:var(--gray-600)">You’ll use this to unlock Lead OS. 6+ characters.</p><div class="field"><label>Access code *</label><input id="obCode" type="password" class="input" value="${esc(onboardData.code)}"></div><div class="field"><label>Confirm *</label><input id="obCode2" type="password" class="input"></div><div id="obErr4" class="error"></div><div style="display:flex;gap:8px"><button class="btn btn-secondary" style="flex:1" onclick="prevOnboard()">Back</button><button class="btn btn-primary" style="flex:1" onclick="finishOnboard()">Create OS →</button></div></div>`
+];
+card.innerHTML=steps[onboardStep];
+}
+function nextOnboard(){
+if(onboardStep===0){onboardStep=1;renderOnboardStep();return}
+if(onboardStep===1){
+const n=document.getElementById('obName').value.trim(),b=document.getElementById('obBusiness').value.trim(),p=document.getElementById('obPhone').value.trim(),e=document.getElementById('obEmail').value.trim();
+const err=document.getElementById('obErr1');err.classList.remove('show');
+if(!n||!b||!p||!e){err.textContent='All fields required';err.classList.add('show');return}
+if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){err.textContent='Valid email required';err.classList.add('show');return}
+onboardData.name=n;onboardData.business=b;onboardData.phone=p;onboardData.email=e;
+}else if(onboardStep===2){
+const leak=document.getElementById('obLeak').value;const err=document.getElementById('obErr2');
+if(!onboardData.handle){err.textContent='Choose how enquiries reach you';err.classList.add('show');return}
+if(!leak){err.textContent='Choose biggest leak';err.classList.add('show');return}
+onboardData.leak=leak;onboardData.leadsPerWeek=document.getElementById('obLeads').value;
+}else if(onboardStep===3){
+const err=document.getElementById('obErr3');
+if(!onboardData.goal){err.textContent='Choose first system';err.classList.add('show');return}
+onboardData.success=document.getElementById('obSuccess').value.trim();
+}
+onboardStep++;renderOnboardStep();
+}
+function prevOnboard(){if(onboardStep>0){onboardStep--;renderOnboardStep()}}
+function finishOnboard(){
+const c=document.getElementById('obCode').value,c2=document.getElementById('obCode2').value,err=document.getElementById('obErr4');
+if(!c||c.length<6){err.textContent='Code 6+ chars';err.classList.add('show');return}
+if(c!==c2){err.textContent='Codes no match';err.classList.add('show');return}
+onboardData.code=c;localStorage.setItem(ONBOARD_KEY,JSON.stringify(onboardData));setIdentity(onboardData.name,onboardData.email,onboardData.phone,c);
+const card=document.getElementById('gateCard');
+card.innerHTML=`<div class="gate-hero"><div style="width:36px;height:36px;background:#fff;color:#000;border-radius:9px;display:grid;place-items:center;font-weight:800">TRL</div><div><div style="font-weight:800">Welcome, ${esc(onboardData.name)}</div><div style="font-size:11px;opacity:0.7">Your OS ready</div></div></div><div style="padding:18px;display:grid;gap:12px;text-align:center"><div style="width:48px;height:48px;background:var(--green-50);border-radius:50%;display:grid;place-items:center;margin:0 auto;color:var(--green)">✓</div><h2>Access granted</h2><p style="font-size:12px;color:var(--gray-600)">Your code is <b>${esc(c)}</b> — you chose it.</p><button class="btn btn-primary btn-w100" onclick="enterAfterOnboard()">Enter Lead OS →</button></div>`;
+}
+function enterAfterOnboard(){document.getElementById('gate').classList.add('hidden');document.getElementById('shell').style.display='block';document.getElementById('shell').classList.add('active');updateIdentityUI();switchTab(location.hash.replace('#','')||'leads');render();sessionStorage.setItem('trl-session','authed')}
+function quickUnlock(){setIdentity('Builder','officialtrlservice@gmail.com','0319 0091457','TRL-2026');localStorage.setItem(ONBOARD_KEY,JSON.stringify({name:'Builder',business:'TRL',phone:'0319 0091457',email:'officialtrlservice@gmail.com',handle:'No system',leak:'Follow-ups',goal:'Pipeline I can see',code:'TRL-2026'}));document.getElementById('gate').classList.add('hidden');document.getElementById('shell').style.display='block';document.getElementById('shell').classList.add('active');updateIdentityUI();switchTab('leads');render();sessionStorage.setItem('trl-session','authed')}
+function resetOnboarding(){
+if(!confirm('Reset onboarding? Leads STAY (profile only). To wipe leads too, use Factory Reset in Settings. Continue?'))return;
+localStorage.removeItem(ONBOARD_KEY);localStorage.removeItem(AUTH_KEY);localStorage.removeItem(NAME_KEY);localStorage.removeItem(EMAIL_KEY);localStorage.removeItem(PHONE_KEY);sessionStorage.removeItem('trl-session');
+// keep leads but force fresh render so old IDs don't show as cached
+try{ sessionStorage.removeItem('trl-session'); localStorage.removeItem('trl-sidebar-collapsed'); }catch(e){}
+toast('Profile reset — setup again. Leads kept.','ok');renderGate();document.getElementById('gate').classList.remove('hidden');document.getElementById('shell').style.display='none';document.getElementById('shell').classList.remove('active');updateIdentityUI();render();
+}
+function factoryReset(){
+if(!confirm('FACTORY RESET — erases ALL: leads ('+leads.length+') + profile + onboarding + agent history. Cannot undo. Export first?'))return;
+if(!confirm('Final: delete '+leads.length+' leads permanently? Type OK by pressing OK.'))return;
+localStorage.removeItem(STORAGE_KEY);localStorage.removeItem(ONBOARD_KEY);localStorage.removeItem(AUTH_KEY);localStorage.removeItem(NAME_KEY);localStorage.removeItem(EMAIL_KEY);localStorage.removeItem(PHONE_KEY);localStorage.removeItem('trl-agent-history');localStorage.removeItem('trl-sidebar-collapsed');localStorage.removeItem('trl-density');sessionStorage.clear();
+leads=[]; try{save();}catch(e){} render(); updateIdentityUI();
+toast('Factory reset — all wiped. Fresh start.','ok');renderGate();document.getElementById('gate').classList.remove('hidden');document.getElementById('shell').style.display='none';document.getElementById('shell').classList.remove('active');
+}
+function unlock(asGuest){
+const passEl=document.getElementById('gatePass'),emailEl=document.getElementById('gateEmail');
+if(!passEl){document.getElementById('gate').classList.add('hidden');document.getElementById('shell').style.display='block';document.getElementById('shell').classList.add('active');switchTab('leads');render();sessionStorage.setItem('trl-session','authed');return}
+const pass=(passEl.value||'').trim(),email=(emailEl.value||'').trim()||getEmail(),saved=loadAuth(),expected=saved.pass||'TRL-2026';
+if(!asGuest&&pass!==expected){const err=document.getElementById('gateErr');if(err)err.classList.add('show');toast('Wrong code','err');return}
+if(email)localStorage.setItem(EMAIL_KEY,email);
+if(pass&&!asGuest)saveAuth({...saved,email,pass});
+document.getElementById('gate').classList.add('hidden');document.getElementById('shell').style.display='block';document.getElementById('shell').classList.add('active');updateIdentityUI();switchTab(location.hash.replace('#','')||'leads');render();sessionStorage.setItem('trl-session','authed');toast(asGuest?'Guest view':'Welcome back, '+getName(),'ok');
+}
+function handleHash(){
+const hash=(location.hash||'#leads').replace('#','');
+const valid=['leads','crm','analytics','loop','day','settings'];
+const target=valid.includes(hash)?hash:'leads';
+document.querySelectorAll('.tab,.nav-item,.bottom-nav button').forEach(el=>{el.classList.toggle('active',el.dataset.tab===target)});
+['tab-leads','tab-crm','tab-analytics','tab-loop','tab-day','tab-settings'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none'});
+const map={leads:'tab-leads',crm:'tab-crm',analytics:'tab-analytics',loop:'tab-loop',day:'tab-day',settings:'tab-settings'};
+const show=document.getElementById(map[target]);if(show)show.style.display='block';
+// update hero per category — so you know where you are
+const heroTitle=document.getElementById('heroTitle'), heroDesc=document.getElementById('heroDesc'), heroEyebrow=document.getElementById('heroEyebrow');
+const heroMap={
+leads:{eyebrow:'Pipeline · Logged → Owned → Next action',title:'Pipeline <span>— deals & leads</span>',desc:'Every lead: logged → owned → next action with a date. No limbo. Pipeline is the single source of truth.',actions:`<button class="btn btn-primary" onclick="openModal()">+ Add lead</button><button class="btn btn-secondary" onclick="switchTab('loop')">Run loop →</button><button class="btn btn-secondary" onclick="exportCSV()" style="font-size:12px">Export</button>`},
+crm:{eyebrow:'CRM · Deals · Contacts · Stages',title:'CRM <span>— pipeline CRM</span>',desc:'Same leads, CRM view. Kanban by status, value in $/PKR, next 7 days. Connected to Pipeline.',actions:`<button class="btn btn-primary" onclick="openModal()">+ Add deal</button><button class="btn btn-secondary" onclick="switchTab('leads')">View pipeline →</button><button class="btn btn-secondary" onclick="exportCSV()">Export</button>`},
+analytics:{eyebrow:'Analytics · Time saved + Results',title:'Analytics <span>— measure what matters</span>',desc:'North Star: time saved + results per user per month. Conversion, reliability, health.',actions:`<button class="btn btn-primary" onclick="switchTab('leads')">Open pipeline →</button><button class="btn btn-secondary" onclick="exportCSV()">Export report</button>`},
+loop:{eyebrow:'Daily Loop · 10 min · 14:00 PKT',title:'Daily loop <span>— fix red, then yellow</span>',desc:'Overdue → Due today → Next → No-date → Export. Every morning at 14:00.',actions:`<button class="btn btn-primary" onclick="runLoopCheck(true)">Run check ↻</button><button class="btn btn-secondary" onclick="switchTab('leads')">Fix overdue →</button>`},
+day:{eyebrow:'Founder\'s Day · 14:00–04:00 PKT',title:'Founder\'s day <span>— with rest break</span>',desc:'10m loop + 90m outbound + rest + delivery + deep work. No silent drift.',actions:`<button class="btn btn-primary" onclick="switchTab('loop')">Run loop →</button><button class="btn btn-secondary" onclick="switchTab('leads')">Pipeline →</button>`},
+settings:{eyebrow:'Settings · Whole system',title:'Settings <span>— control everything</span>',desc:'Profile, pipeline config, notifications, data, appearance — one place.',actions:`<button class="btn btn-primary" onclick="saveSettings()">Save profile</button><button class="btn btn-secondary" onclick="factoryReset()" style="color:var(--red)">Factory reset</button>`}
+};
+if(heroMap[target]&&heroTitle){
+heroEyebrow.textContent=heroMap[target].eyebrow;
+heroTitle.innerHTML=heroMap[target].title;
+heroDesc.textContent=heroMap[target].desc;
+const ha=document.getElementById('heroActions'); if(ha) ha.innerHTML=heroMap[target].actions;
+// hero card per category
+const hc=document.getElementById('heroCard');
+if(hc){
+ if(target==='leads'){
+  hc.innerHTML=`<div style="display:flex;justify-content:space-between;font-size:11px;opacity:0.7"><span>Daily command</span><b id="todayLabel">${new Date().toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})}</b></div><div class="momentum" id="momentum">${document.getElementById('momentum')?.textContent||'0%'}</div><div class="progress"><i id="progressBar" style="width:${document.getElementById('progressBar')?.style.width||'6%'}"></i></div><div style="display:grid;gap:8px"><div style="display:flex;justify-content:space-between;background:rgba(255,255,255,0.07);padding:8px 10px;border-radius:10px"><span>Priority</span><b id="priorityText">${document.getElementById('priorityText')?.textContent||'Add first 5'}</b></div><div style="display:flex;justify-content:space-between;background:rgba(255,255,255,0.07);padding:8px 10px;border-radius:10px"><span>Weekly goal</span><b>10 convos</b></div></div><div style="display:flex;gap:8px;margin-top:12px"><button class="btn btn-secondary" style="flex:1;background:rgba(255,255,255,0.1);color:#fff" onclick="seedStarter()">Load 20</button><button class="btn" style="flex:1;background:var(--blue);color:#fff" onclick="switchTab('leads')">Open →</button></div>`;
+ } else if(target==='crm'){
+  const total=leads.length; const sum=leads.reduce((a,l)=>a+(l.value||0),0) || leads.filter(l=>l.offer).length*50;
+  hc.innerHTML=`<div style="font-size:11px;opacity:0.7;letter-spacing:0.07em;text-transform:uppercase">Pipeline value</div><div style="font-family:'Sora',sans-serif;font-size:26px;font-weight:800">$${sum.toLocaleString()}</div><div style="font-size:11px;opacity:0.7">${total} deals · PKR ${Math.round(sum*280).toLocaleString()}</div><div style="margin-top:10px;display:grid;gap:6px"><div style="display:flex;justify-content:space-between;background:rgba(255,255,255,0.07);padding:8px 10px;border-radius:10px"><span>Stages</span><b>7 columns</b></div><div style="display:flex;justify-content:space-between;background:rgba(255,255,255,0.07);padding:8px 10px;border-radius:10px"><span>Next 7 days</span><b>${leads.filter(l=>{if(!l.nextActionDate)return false; const d=new Date(l.nextActionDate), t=new Date(todayISO()); return (d-t)/86400000>=0&&(d-t)/86400000<=7}).length} action(s)</b></div></div>`;
+ } else if(target==='analytics'){
+  const total=leads.length, replied=leads.filter(l=>['replied','call booked','proposal sent','closed-won'].includes(l.status)).length, conv=total?Math.round(replied/total*100):0, withDate=leads.filter(l=>!!l.nextActionDate).length, reli=total?Math.round(withDate/total*100):0;
+  hc.innerHTML=`<div style="font-size:11px;opacity:0.7;letter-spacing:0.07em;text-transform:uppercase">Analytics snapshot</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px"><div style="background:rgba(255,255,255,0.07);padding:10px;border-radius:10px;text-align:center"><div style="font-family:'Sora',sans-serif;font-size:22px;font-weight:800">${conv}%</div><div style="font-size:11px;opacity:0.7">Conversion</div></div><div style="background:rgba(255,255,255,0.07);padding:10px;border-radius:10px;text-align:center"><div style="font-family:'Sora',sans-serif;font-size:22px;font-weight:800">${reli}%</div><div style="font-size:11px;opacity:0.7">Reliability</div></div></div><div style="margin-top:10px;background:rgba(255,255,255,0.07);padding:8px 10px;border-radius:10px;display:flex;justify-content:space-between"><span>Time saved</span><b>${Math.round(replied*0.25)}h</b></div>`;
+ } else if(target==='loop'){
+  const today=todayISO(); const overdue=leads.filter(l=>(l.nextActionDate||'')<today&&!['closed-won','closed-lost'].includes(l.status)).length; const due=leads.filter(l=>l.nextActionDate===today).length; const noDate=leads.filter(l=>!l.nextActionDate).length;
+  hc.innerHTML=`<div style="font-size:11px;opacity:0.7">10-min loop — 14:00 PKT</div><div style="display:grid;gap:8px;margin-top:8px"><div style="display:flex;justify-content:space-between;background:var(--red);padding:8px 10px;border-radius:10px"><span>Overdue</span><b>${overdue}</b></div><div style="display:flex;justify-content:space-between;background:var(--amber);padding:8px 10px;border-radius:10px;color:#000"><span>Due today</span><b>${due}</b></div><div style="display:flex;justify-content:space-between;background:rgba(255,255,255,0.07);padding:8px 10px;border-radius:10px"><span>No-date</span><b>${noDate}</b></div></div><div style="font-size:11px;opacity:0.6;margin-top:8px">Fix red first, then yellow</div>`;
+ } else if(target==='day'){
+  hc.innerHTML=`<div style="font-size:11px;opacity:0.7">${new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})}</div><div style="font-family:'Sora',sans-serif;font-size:18px;font-weight:800;margin-top:4px">14:00–04:00 PKT</div><div style="font-size:12px;opacity:0.7">With rest break · 30m</div><div style="margin-top:10px;display:grid;gap:6px"><div style="background:rgba(255,255,255,0.07);padding:8px 10px;border-radius:10px;display:flex;justify-content:space-between"><span>GATE 1</span><b>27 Sep · 14d habit</b></div><div style="background:rgba(255,255,255,0.07);padding:8px 10px;border-radius:10px;display:flex;justify-content:space-between"><span>GATE 2</span><b>13 Oct · 1st pay</b></div></div>`;
+ } else if(target==='settings'){
+  hc.innerHTML=`<div style="display:flex;align-items:center;gap:10px"><div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,var(--blue),var(--navy));display:grid;place-items:center;font-weight:800">${(getName().split(/\s+/).slice(0,2).map(s=>s[0]).join('').toUpperCase())}</div><div><div style="font-weight:800">${esc(getName())}</div><div style="font-size:11px;opacity:0.7">${esc(getEmail())}</div></div></div><div style="margin-top:10px;display:grid;gap:6px"><div style="background:rgba(255,255,255,0.07);padding:8px 10px;border-radius:10px;display:flex;justify-content:space-between"><span>Leads</span><b>${leads.length}</b></div><div style="background:rgba(255,255,255,0.07);padding:8px 10px;border-radius:10px;display:flex;justify-content:space-between"><span>Plan</span><b>Private v6</b></div></div><div style="font-size:11px;opacity:0.6;margin-top:8px">Profile · Data · Appearance</div>`;
+ }
+}
+// re-apply momentum/progress after swap for pipeline
+setTimeout(()=>{const m=document.getElementById('momentum'); if(m&&target==='leads'){ /* keep */ }},0);
+}
+if(target==='loop')runLoopCheck();
+if(target==='crm')renderCRM();
+if(target==='analytics')renderAnalytics();
+if(target==='day')renderWeek();
+if(target==='settings'){
+document.getElementById('setName').value=getName();
+document.getElementById('setEmail').value=getEmail();
+document.getElementById('setPhone').value=getPhone();
+document.getElementById('setPass').value=loadAuth().pass||'TRL-2026';
+const onboard=JSON.parse(localStorage.getItem(ONBOARD_KEY)||'null');
+const sum=document.getElementById('onboardingSummary');
+if(sum){if(onboard)sum.innerHTML=`<b>${esc(onboard.name)}</b> · ${esc(onboard.business)}<br>${esc(onboard.email)} · ${esc(onboard.phone)}<br>${esc(onboard.handle)} · ${esc(onboard.leak)}<br>${esc(onboard.goal)}`;else sum.textContent='No onboarding — complete secure access.'}
+}
+}
+function switchTab(n){
+const valid=['leads','crm','analytics','loop','day','settings'];
+if(!valid.includes(n))n='leads';
+if(location.hash!=='#'+n)history.pushState(null,'','#'+n);
+handleHash();
+}
+function esc(s){return (s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function saveSettings(){const n=document.getElementById('setName').value.trim(),e=document.getElementById('setEmail').value.trim(),p=document.getElementById('setPhone').value.trim(),code=document.getElementById('setPass').value.trim();if(e&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e)){toast('Invalid email','err');return}if(!code||code.length<6){toast('Code 6+ chars','err');return}if(!n){toast('Name required','err');return}setIdentity(n,e,p,code);document.getElementById('settingsSaved').style.display='block';setTimeout(()=>document.getElementById('settingsSaved').style.display='none',2000);toast('Saved','ok')}
+function render(){
+load();updateIdentityUI();
+const q=(document.getElementById('search')?.value||'').toLowerCase();
+const fStatus=document.getElementById('filterStatus')?.value||'';
+const fSource=document.getElementById('filterSource')?.value||'';
+const fDate=document.getElementById('filterDate')?.value||'';
+let filtered=leads.filter(l=>{
+const hay=`${l.name} ${l.businessType} ${l.notes} ${l.nextAction} ${l.source} ${l.status}`.toLowerCase();
+if(q&&!hay.includes(q))return false;
+if(fStatus&&l.status!==fStatus)return false;
+if(fSource&&l.source!==fSource)return false;
+if(fDate==='overdue'&&!((l.nextActionDate||'')<todayISO()&&!['closed-won','closed-lost'].includes(l.status)))return false;
+if(fDate==='today'&&l.nextActionDate!==todayISO())return false;
+if(fDate==='no-date'&&l.nextActionDate)return false;
+return true;
+});
+const today=todayISO();
+filtered.sort((a,b)=>{
+const ad=a.nextActionDate||'9999-12-31',bd=b.nextActionDate||'9999-12-31';
+const aOver=ad<today&&!['closed-won','closed-lost'].includes(a.status);
+const bOver=bd<today&&!['closed-won','closed-lost'].includes(b.status);
+if(aOver!==bOver)return aOver?-1:1;
+if(ad!==bd)return ad.localeCompare(bd);
+return (a.name||'').localeCompare(b.name||'');
+});
+const tbody=document.getElementById('tbody');
+if(tbody){
+tbody.innerHTML='';
+filtered.forEach((l,idx)=>{
+const tr=document.createElement('tr');
+const overdue=l.nextActionDate&&l.nextActionDate<today&&!['closed-won','closed-lost'].includes(l.status);
+const dueToday=l.nextActionDate===today;
+const prColor = l.priority==='High'?'var(--red)':l.priority==='Medium'?'var(--amber)':l.priority==='Low'?'var(--gray-500)':'';
+const prBadge = l.priority ? `<span style="font-size:10px;font-weight:800;padding:2px 6px;border-radius:999px;background:${l.priority==='High'?'var(--red-50)':l.priority==='Medium'?'var(--amber-50)':'var(--gray-100)'};color:${prColor};border:1px solid ${l.priority==='High'?'var(--red-100)':l.priority==='Medium'?'var(--amber-100)':'var(--gray-200)'};margin-left:6px">${esc(l.priority)}</span>` : '';
+const valDisp = l.value ? `$${Number(l.value).toLocaleString()}` : (l.offer ? esc(l.offer) : '<span style="color:var(--gray-400)">—</span>');
+const probDisp = l.prob ? `<span style="font-size:10px;color:var(--blue);margin-left:4px">${esc(l.prob)}</span>` : '';
+const tagsDisp = l.tags ? `<div style="font-size:10px;color:var(--gray-500);margin-top:2px">${esc(l.tags)}</div>` : '';
+tr.innerHTML=`<td><input type="checkbox" class="rowCheck" data-id="${l.id}" onchange="updateBulkBar()"></td><td style="color:var(--gray-500);font-weight:700">${idx+1}</td>
+<td><div style="font-weight:800;display:flex;align-items:center;gap:4px">${esc(l.name)}${prBadge}</div><div style="font-size:11px;color:var(--gray-500)">${esc(l.channel||'WhatsApp')} · ${esc(l.businessType||'—')}${probDisp}</div>${tagsDisp}</td>
+<td style="font-size:11px;color:var(--gray-500)">${esc(l.businessType?l.businessType:'—')}<div style="font-size:10px;color:var(--gray-400)">${esc(l.source||'')}</div></td>
+<td style="font-size:11px;color:var(--gray-500)">${esc(l.source||'—')}</td>
+<td><span class="badge ${l.status==='not contacted'?'badge-not':l.status==='message sent'?'badge-sent':l.status==='replied'?'badge-replied':l.status==='call booked'?'badge-booked':l.status==='closed-won'?'badge-won':l.status==='closed-lost'?'badge-lost':'badge-sent'}">${esc(l.status)}</span></td>
+<td style="font-size:12px;font-weight:700;color:${l.value?'var(--gray-900)':'var(--gray-500)'}">${valDisp}</td>
+<td style="font-size:11px;color:var(--gray-500)">${esc(l.nextAction||'—')}</td>
+<td style="font-size:11px;color:${overdue?'var(--red)':dueToday?'var(--amber)':'var(--gray-500)'};font-weight:700">${l.nextActionDate?l.nextActionDate+(overdue?' · overdue':dueToday?' · today':''):'<span style="color:var(--red)">— no date</span>'}</td>
+<td><div style="display:flex;gap:4px"><button onclick="editLead(${l.id})" title="Edit" style="width:28px;height:28px;border:1px solid var(--gray-200);background:#fff;border-radius:8px;cursor:pointer">✎</button><button onclick="quickWA(${l.id})" title="WhatsApp" style="width:28px;height:28px;background:#25D366;color:#fff;border-radius:8px;border:none;cursor:pointer">◈</button><button onclick="askDelete(${l.id})" title="Delete" style="width:28px;height:28px;border:1px solid var(--gray-200);background:#fff;border-radius:8px;cursor:pointer">🗑</button></div></td>`;
+tbody.appendChild(tr);
+});
+}
+const cardsEl=document.getElementById('cards');
+if(cardsEl){
+cardsEl.innerHTML='';
+filtered.forEach(l=>{
+const overdue=l.nextActionDate&&l.nextActionDate<today&&!['closed-won','closed-lost'].includes(l.status);
+const div=document.createElement('div');div.className='card';
+const cardVal = l.value ? `$${Number(l.value).toLocaleString()}` : (l.offer?esc(l.offer):'—');
+const cardPr = l.priority ? `<span style="font-size:10px;padding:2px 6px;border-radius:999px;background:${l.priority==='High'?'var(--red-50)':l.priority==='Medium'?'var(--amber-50)':'var(--gray-100)'};color:${l.priority==='High'?'var(--red)':l.priority==='Medium'?'var(--amber)':'var(--gray-500)'};border:1px solid var(--gray-200)">${esc(l.priority)}</span>` : '';
+div.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:start"><div><div style="font-weight:800;display:flex;gap:6px;align-items:center">${esc(l.name)} ${cardPr}</div><div style="font-size:11px;color:var(--gray-500)">${esc(l.businessType||'—')} · ${esc(l.source)} · <b style="color:var(--blue)">${cardVal}</b></div>${l.tags?`<div style="font-size:10px;color:var(--gray-500)">${esc(l.tags)}</div>`:''}</div><span class="badge ${l.status==='not contacted'?'badge-not':l.status==='closed-won'?'badge-won':l.status==='closed-lost'?'badge-lost':'badge-sent'}">${esc(l.status)}</span></div><div style="padding:8px;background:var(--gray-50);border-radius:8px"><div style="font-size:10px;font-weight:800;color:var(--gray-500)">NEXT ACTION</div><div style="font-weight:700;font-size:12px">${esc(l.nextAction||'—')}</div><div style="font-size:11px;color:${overdue?'var(--red)':'var(--gray-500)'}">${l.nextActionDate?l.nextActionDate:'— no date'} ${l.prob?`· ${esc(l.prob)}`:''}</div></div><div style="display:flex;gap:6px"><button onclick="editLead(${l.id})" style="flex:1;padding:8px;border:1px solid var(--gray-200);background:#fff;border-radius:8px">✎ Edit</button><button onclick="quickWA(${l.id})" style="flex:1;padding:8px;background:#25D366;color:#fff;border-radius:8px;border:none">WA</button><button onclick="askDelete(${l.id})" style="flex:1;padding:8px;border:1px solid var(--gray-200);background:#fff;border-radius:8px;color:var(--red)">🗑</button></div>`;
+cardsEl.appendChild(div);
+});
+}
+const empty=document.getElementById('empty');
+const table=document.querySelector('.table');
+if(leads.length===0){
+if(empty)empty.style.display='block';
+if(table)table.style.display='none';
+if(cardsEl)cardsEl.style.display='none';
+}else if(filtered.length===0){
+if(empty){empty.style.display='block';empty.innerHTML=`<h4>No matches</h4><p>Try different filter. ${leads.length} leads, none match.</p><button class="btn btn-secondary" onclick="clearFilters()">Clear filters</button>`}
+if(table)table.style.display=window.innerWidth<768?'none':'table';
+if(cardsEl)cardsEl.style.display=window.innerWidth<768?'grid':'none';
+}else{
+if(empty)empty.style.display='none';
+if(table)table.style.display=window.innerWidth<768?'none':'table';
+if(cardsEl)cardsEl.style.display=window.innerWidth<768?'grid':'none';
+}
+const overdue=leads.filter(l=>(l.nextActionDate||'')<today&&!['closed-won','closed-lost'].includes(l.status)).length;
+const due=leads.filter(l=>l.nextActionDate===today).length;
+const next=leads.filter(l=>(l.nextActionDate||'')>today).length;
+const noDate=leads.filter(l=>!l.nextActionDate).length;
+const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};
+set('statTotal',leads.length);set('statOverdue',overdue);set('statDue',due);set('statNext',next);
+set('heroTotal',leads.length);set('heroOverdue',overdue);set('heroDue',due);
+set('countLeads',leads.length);set('countLoop',overdue+due+noDate);set('sCountLeads',leads.length);set('sCountLoop',overdue+due+noDate);set('countCRM',leads.length);set('sCountCRM',leads.length);
+if(document.getElementById('tab-crm')&&document.getElementById('tab-crm').style.display!=='none')renderCRM();
+if(document.getElementById('tab-analytics')&&document.getElementById('tab-analytics').style.display!=='none')renderAnalytics();
+const mom=leads.length?Math.min(94,48+leads.length*3+(due?7:0)-overdue*5):0;
+const prog=leads.length?Math.min(94,48+leads.length*2):6;
+const momEl=document.getElementById('momentum'),progEl=document.getElementById('progressBar');
+if(momEl)momEl.textContent=mom+'%';
+if(progEl)progEl.style.width=prog+'%';
+const priEl=document.getElementById('priorityText');
+if(priEl)priEl.textContent=overdue?`${overdue} overdue — fix red first`:due?`${due} due today — run loop`:leads.length?`Next: ${leads[0]?.name||'keep outbound'}`:'Add first 5';
+runLoopCheck();renderWeek();
+}
+function clearFilters(){['search','filterStatus','filterSource','filterDate'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''});render()}
+function openModal(id=null){
+editingId=id;
+const m=document.getElementById('modal');m.classList.add('open');
+const err=document.getElementById('modalErr');err.style.display='none';
+if(id!==null){
+const l=leads.find(x=>x.id===id);
+document.getElementById('modalTitle').textContent='Edit lead';
+document.getElementById('fName').value=l.name||'';
+document.getElementById('fBiz').value=l.businessType||'';
+document.getElementById('fSource').value=l.source||'warm — local business';
+document.getElementById('fStatus').value=l.status||'not contacted';
+document.getElementById('fChannel').value=l.channel||'WhatsApp';
+document.getElementById('fLast').value=l.lastContactDate||'';
+document.getElementById('fNext').value=l.nextAction||'';
+document.getElementById('fDate').value=l.nextActionDate||'';
+document.getElementById('fOffer').value=l.offer||'';
+document.getElementById('fNotes').value=l.notes||'';
+if(document.getElementById('fPriority'))document.getElementById('fPriority').value=l.priority||'';
+if(document.getElementById('fValue'))document.getElementById('fValue').value=l.value||'';
+if(document.getElementById('fProb'))document.getElementById('fProb').value=l.prob||'';
+if(document.getElementById('fTags'))document.getElementById('fTags').value=l.tags||'';
+updateProb();
+}else{
+document.getElementById('modalTitle').textContent='Add lead';
+['fName','fBiz','fNext','fNotes'].forEach(id=>document.getElementById(id).value='');
+document.getElementById('fSource').value='warm — local business';
+document.getElementById('fStatus').value='not contacted';
+document.getElementById('fChannel').value='WhatsApp';
+document.getElementById('fLast').value=todayISO();
+document.getElementById('fDate').value=new Date(Date.now()+86400000).toISOString().slice(0,10);
+document.getElementById('fOffer').value='';
+if(document.getElementById('fPriority'))document.getElementById('fPriority').value='';
+if(document.getElementById('fValue'))document.getElementById('fValue').value='';
+if(document.getElementById('fProb'))document.getElementById('fProb').value='';
+if(document.getElementById('fTags'))document.getElementById('fTags').value='';
+}
+}
+function closeModal(){document.getElementById('modal').classList.remove('open');editingId=null}
+function updateProb(){const s=document.getElementById('fStatus')?.value;const m={'not contacted':'10%','message sent':'25%','replied':'50%','call booked':'75%','proposal sent':'90%','closed-won':'100%','closed-lost':'0%'};const el=document.getElementById('probLabel');if(el&&m[s])el.textContent='→ '+m[s]+' auto';}
+function saveLead(){
+const n=document.getElementById('fName').value.trim(),b=document.getElementById('fBiz').value.trim(),s=document.getElementById('fSource').value,st=document.getElementById('fStatus').value,ch=document.getElementById('fChannel').value,lc=document.getElementById('fLast').value,na=document.getElementById('fNext').value.trim(),nd=document.getElementById('fDate').value,off=document.getElementById('fOffer').value,no=document.getElementById('fNotes').value.trim();
+const pr=document.getElementById('fPriority')?.value||'',val=parseFloat(document.getElementById('fValue')?.value||'')||0,prob=document.getElementById('fProb')?.value||'',tags=document.getElementById('fTags')?.value.trim()||'';
+const err=document.getElementById('modalErr');err.style.display='none';
+if(!n){err.textContent='Name required';err.style.display='block';return}
+if(!na){err.textContent='Next action required';err.style.display='block';return}
+if(!nd){err.textContent='Next date required';err.style.display='block';return}
+load();
+const extra={priority:pr,value:val,prob:prob,tags:tags};
+if(editingId!==null){const idx=leads.findIndex(x=>x.id===editingId);if(idx>-1)leads[idx]={...leads[idx],name:n,businessType:b,source:s,status:st,channel:ch,lastContactDate:lc,nextAction:na,nextActionDate:nd,offer:off,notes:no,...extra,updatedAt:new Date().toISOString()}}else{leads.push({id:Date.now()+Math.random(),name:n,businessType:b,source:s,status:st,channel:ch,lastContactDate:lc,nextAction:na,nextActionDate:nd,offer:off,notes:no,...extra,createdAt:new Date().toISOString()})}
+save();closeModal();render();toast(editingId!==null?'Updated':'Added','ok');
+}
+function editLead(id){load();openModal(id)}
+function dupLead(id){load();const l=leads.find(x=>x.id===id);if(!l)return;leads.push({...l,id:Date.now()+Math.random(),name:l.name+' (copy)'});save();render();toast('Duplicated','ok')}
+function askDelete(id){editingId=id;confirmAction=()=>{load();leads=leads.filter(x=>x.id!==id);save();render();toast('Deleted','ok')};document.getElementById('confirmTitle').textContent='Delete lead?';document.getElementById('confirmText').textContent='Removes from OS.';document.getElementById('confirmModal').classList.add('open')}
+function confirmClear(){confirmAction=()=>{leads=[];save();render();toast('All cleared','ok')};document.getElementById('confirmTitle').textContent='Clear all?';document.getElementById('confirmText').textContent='Cannot be undone. Export first.';document.getElementById('confirmModal').classList.add('open')}
+function closeConfirm(doIt){document.getElementById('confirmModal').classList.remove('open');if(doIt&&confirmAction)confirmAction();confirmAction=null}
+function seedStarter(){
+load();
+if(leads.length>0){confirmAction=()=>doSeed();document.getElementById('confirmTitle').textContent='Load 20?';document.getElementById('confirmText').textContent='Adds 20 rows. Keeps existing.';document.getElementById('confirmModal').classList.add('open');return}
+doSeed();
+}
+function doSeed(){
+load();
+const tmr=new Date(Date.now()+86400000).toISOString().slice(0,10);
+for(let i=1;i<=20;i++){
+const src=i<=3?'warm — local business':i===4?'warm — creator':i===5?'warm — existing contact':i<=10?'warm — local business':i<=15?'warm — creator':'warm — existing contact';
+if(leads.some(l=>l.name===`— Row ${i}`))continue;
+const hasDate=i<=5;
+leads.push({id:Date.now()+i+Math.random(),name:`— Row ${i}`,businessType:'',source:src,status:'not contacted',channel:'WhatsApp',lastContactDate:'',nextAction:hasDate?'Send Day-1 message':'',nextActionDate:hasDate?tmr:'',offer:'',notes:i===1?'Replace with real name':''});
+}
+save();render();closeConfirm(false);toast('Starter loaded','ok');
+}
+function renderCRM(){
+const total=leads.length;
+const priceMap={'Micro Audit $35':35,'Automation Sprint $499':499,'Founder OS $1,297':1297};
+let sum=0;leads.forEach(l=>{ if(l.value) sum+=Number(l.value); else if(l.offer&&priceMap[l.offer]) sum+=priceMap[l.offer]; });
+const elV=document.getElementById('crmValue');if(elV)elV.textContent='$'+sum.toLocaleString()+(sum?' · PKR '+Math.round(sum*280).toLocaleString():'');
+const stages=['not contacted','message sent','replied','call booked','proposal sent','closed-won','closed-lost'];
+const counts={};stages.forEach(s=>counts[s]=leads.filter(l=>l.status===s).length);
+const elS=document.getElementById('crmStages');if(elS)elS.innerHTML=stages.map(s=>`<div style="display:flex;justify-content:space-between"><span>${s}</span><span><b>${counts[s]}</b> ${total?Math.round(counts[s]/total*100)+'%':''}</span></div>`).join('');
+const next7=leads.filter(l=>{if(!l.nextActionDate)return false;const d=new Date(l.nextActionDate),t=new Date(todayISO());return (d-t)/86400000>=0&&(d-t)/86400000<=7&&!['closed-won','closed-lost'].includes(l.status)}).slice(0,5);
+const elN=document.getElementById('crmNext7');if(elN)elN.innerHTML=next7.length?next7.map(l=>`<div style="padding:6px;background:#fff;border:1px solid var(--gray-200);border-radius:8px;display:flex;justify-content:space-between"><span><b>${esc(l.name)}</b><br><span style="font-size:11px;color:var(--gray-500)">${esc(l.nextAction)}</span></span><span style="font-size:11px;font-weight:700">${l.nextActionDate}</span></div>`).join(''):'<div style="padding:8px;background:var(--gray-50);border:1px dashed var(--gray-300);border-radius:8px;text-align:center;font-size:11px;color:var(--gray-500)">No actions in 7 days</div>';
+const kanban=document.getElementById('crmKanban');if(kanban){const cols=['not contacted','message sent','replied','call booked','proposal sent','closed-won','closed-lost'];kanban.innerHTML=cols.map(col=>{const items=leads.filter(l=>l.status===col);return `<div style="min-width:140px;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:10px;padding:8px"><div style="font-size:10px;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;color:var(--gray-500);margin-bottom:6px;display:flex;justify-content:space-between"><span>${col}</span><span style="background:#fff;padding:2px 6px;border-radius:999px">${items.length}</span></div><div style="display:grid;gap:6px">${items.slice(0,6).map(l=>`<div style="padding:8px;background:#fff;border:1px solid var(--gray-200);border-radius:8px;cursor:pointer" onclick="editLead(${l.id})"><div style="font-weight:700;font-size:12px;display:flex;gap:6px;align-items:center">${esc(l.name)} ${l.priority?`<span style="font-size:9px;padding:2px 5px;border-radius:999px;background:${l.priority==='High'?'var(--red-50)':'var(--amber-50)'};color:${l.priority==='High'?'var(--red)':'var(--amber)'}">${esc(l.priority)}</span>`:''}</div><div style="font-size:11px;color:var(--gray-500)">${esc(l.businessType||'—')}</div><div style="font-size:11px;color:var(--blue);font-weight:700">${l.value?`$${Number(l.value).toLocaleString()}`:esc(l.offer||'')}</div></div>`).join('')||'<div style="text-align:center;color:var(--gray-500);font-size:11px;padding:10px">—</div>'}${items.length>6?`<div style="text-align:center;font-size:11px;color:var(--gray-500)">+${items.length-6} more</div>`:''}</div></div>`}).join('')}}
+function renderAnalytics(){
+const total=leads.length,replied=leads.filter(l=>['replied','call booked','proposal sent','closed-won'].includes(l.status)).length,won=leads.filter(l=>l.status==='closed-won').length,withDate=leads.filter(l=>!!l.nextActionDate).length,overdue=leads.filter(l=>(l.nextActionDate||'')<todayISO()&&!['closed-won','closed-lost'].includes(l.status)).length,noDate=leads.filter(l=>!l.nextActionDate).length;
+const conv=total?Math.round(replied/total*100):0,reli=total?Math.round(withDate/total*100):0,health=(overdue+noDate)===0?'Healthy':(overdue+noDate)<=2?'At risk':'Needs fix';
+const anConv=document.getElementById('anConv');if(anConv)anConv.textContent=conv+'%';
+const anConvBar=document.querySelector('#anConvBar i');if(anConvBar)anConvBar.style.width=conv+'%';
+const anReli=document.getElementById('anReli');if(anReli)anReli.textContent=reli+'%';
+const anReliBar=document.querySelector('#anReliBar i');if(anReliBar)anReliBar.style.width=reli+'%';
+const anHealth=document.getElementById('anHealth');if(anHealth)anHealth.textContent=health;
+const anHealthText=document.getElementById('anHealthText');if(anHealthText)anHealthText.textContent=overdue+' overdue + '+noDate+' no-date';
+const anTime=document.getElementById('anTime');if(anTime)anTime.textContent=Math.round(replied*0.25)+'h';
+const days=[],labels=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);days.push(d.toISOString().slice(0,10));labels.push(d.toLocaleDateString('en-GB',{weekday:'short'}))}
+const counts=days.map(iso=>leads.filter(l=>(l.createdAt||'').slice(0,10)===iso).length);
+const max=Math.max(1,...counts);
+const chart=document.getElementById('anChart'),chartLabels=document.getElementById('anChartLabels');
+if(chart)chart.innerHTML=counts.map(c=>`<div class="chart-bar" style="height:${Math.round(c/max*100)}%;min-height:${c?'6px':'2px'}"></div>`).join('');
+if(chartLabels)chartLabels.innerHTML=labels.map((l,i)=>`<span>${l}<br><b>${counts[i]}</b></span>`).join('');
+}
+function runLoopCheck(showToast){
+load();
+const today=todayISO();
+const overdue=leads.filter(l=>(l.nextActionDate||'')<today&&!['closed-won','closed-lost'].includes(l.status));
+const due=leads.filter(l=>l.nextActionDate===today);
+const next=leads.filter(l=>(l.nextActionDate||'')>today);
+const noDate=leads.filter(l=>!l.nextActionDate);
+const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};
+set('loopCountOverdue',overdue.length);set('loopCountDue',due.length);set('loopCountNext',next.length);set('loopCountNoDate',noDate.length);
+const renderList=(elId,arr,type,empty)=>{
+const c=document.getElementById(elId);if(!c)return;
+if(arr.length===0)c.innerHTML=`<div style="padding:12px;border:1px dashed var(--gray-300);border-radius:10px;background:#fff;text-align:center;font-size:11px;color:var(--gray-500)">${empty}</div>`;
+else c.innerHTML=arr.slice(0,6).map(l=>`<div style="padding:8px;background:#fff;border:1px solid var(--gray-200);border-radius:10px"><div style="display:flex;justify-content:space-between"><b style="font-size:12px">${esc(l.name)}</b><button onclick="editLead(${l.id})" style="width:26px;height:26px;border:1px solid var(--gray-200);background:#fff;border-radius:7px">✎</button></div><div style="font-size:11px;font-weight:700;margin-top:4px">${esc(l.nextAction||l.status)}</div><div style="font-size:11px;color:var(--gray-500)">${l.nextActionDate?esc(l.nextActionDate):'<span style="color:var(--red)">no date — at risk</span>'} · ${esc(l.status)}</div></div>`).join('');
+};
+renderList('loopOverdue',overdue,'overdue','<b style="color:var(--green)">No overdue ✓</b>');
+renderList('loopDue',due,'due','Nothing due today');
+renderList('loopNext',next,'next','No future actions');
+const nd=document.getElementById('loopNoDate');
+if(nd){
+if(noDate.length===0)nd.innerHTML=`<div style="padding:12px;border:1px dashed var(--green);background:var(--green-50);border-radius:10px;text-align:center;font-size:11px;color:var(--green)"><b>All have date ✓</b></div>`;
+else nd.innerHTML=noDate.slice(0,6).map(l=>`<div style="padding:8px;background:var(--red-50);border:1px solid var(--red-100);border-radius:10px"><div style="display:flex;justify-content:space-between"><b>${esc(l.name)}</b><button onclick="editLead(${l.id})" style="background:#fff;border:1px solid var(--red-100);padding:4px 8px;border-radius:7px">Fix</button></div><div style="font-size:11px">At risk — no date</div></div>`).join('');
+}
+if(showToast)toast(`Loop: ${overdue.length} overdue · ${due.length} due`,'info');
+}
+function toggleAll(checked){document.querySelectorAll('.rowCheck').forEach(cb=>cb.checked=checked);updateBulkBar();}
+function updateBulkBar(){const n=document.querySelectorAll('.rowCheck:checked').length;const bar=document.getElementById('bulkBar');const cnt=document.getElementById('bulkCount');if(bar){bar.style.display=n?'flex':'none'; if(cnt)cnt.textContent=n+' selected';} const ca=document.getElementById('checkAll'); if(ca) ca.checked = n && n===document.querySelectorAll('.rowCheck').length;}
+function clearBulk(){document.querySelectorAll('.rowCheck').forEach(cb=>cb.checked=false);updateBulkBar();}
+function bulkDelete(){const ids=[...document.querySelectorAll('.rowCheck:checked')].map(cb=>parseFloat(cb.dataset.id)); if(!ids.length)return; if(!confirm('Delete '+ids.length+' leads?'))return; load(); leads=leads.filter(l=>!ids.includes(l.id)); save(); render(); toast('Deleted '+ids.length,'ok');}
+function bulkExport(){const ids=[...document.querySelectorAll('.rowCheck:checked')].map(cb=>parseFloat(cb.dataset.id)); if(!ids.length)return; load(); const sel=leads.filter(l=>ids.includes(l.id)); const h=['Name','Business','Source','Status','Value','Next action','Next date']; const rows=sel.map(l=>[l.name,l.businessType,l.source,l.status,l.value||l.offer||'',l.nextAction,l.nextActionDate].map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(',')); const csv=[h.join(','),...rows].join('\n'); const b=new Blob([csv],{type:'text/csv'}); const u=URL.createObjectURL(b); const a=document.createElement('a'); a.href=u; a.download=`trl-selected-${todayISO()}.csv`; a.click();}
+function quickWA(id){const l=leads.find(x=>x.id===id); if(!l)return; const msg=`Hi ${l.name.split(' ')[0]||l.name}, it's ${getName().split(' ')[0]} — I run TRL, we build simple systems so enquiries never get lost. Quick question: when someone reaches out to ${l.businessType||'your business'}, how does follow-up happen?`; navigator.clipboard?.writeText(msg); toast('WhatsApp Day-1 copied','ok'); toggleAgent(true); setAgentRole('sales'); document.getElementById('agentInput').value=`Lead: ${l.name} — ${l.businessType} — ${l.status} — value $${l.value||0} — next "${l.nextAction}" — draft WA`; }
+function renderWeek(){
+const c=document.getElementById('weekTargets');if(!c)return;
+load();
+const total=leads.length,contacted=leads.filter(l=>['message sent','replied','call booked','proposal sent','closed-won','closed-lost'].includes(l.status)).length,calls=leads.filter(l=>['call booked','proposal sent','closed-won'].includes(l.status)).length;
+const pct=(n,d)=>d?Math.min(100,Math.round(n/d*100)):0;
+c.innerHTML=`<div style="padding:10px;background:${total>=20?'var(--green-50)':'var(--amber-50)'};border:1px solid ${total>=20?'var(--green-100)':'var(--amber-100)'};border-radius:10px"><div style="display:flex;justify-content:space-between"><b>20 names</b><b>${total}/20</b></div><div style="height:6px;background:rgba(0,0,0,0.08);border-radius:999px;margin-top:6px"><i style="display:block;height:100%;width:${pct(total,20)}%;background:${total>=20?'var(--green)':'var(--amber)'};border-radius:999px"></i></div></div><div style="padding:10px;background:${contacted>=10?'var(--green-50)':'var(--gray-50)'};border-radius:10px"><b>10 conversations</b> ${contacted}/10</div><div style="padding:10px;background:${calls>=3?'var(--green-50)':'var(--gray-50)'};border-radius:10px"><b>3 audits</b> ${calls}/3</div>`;
+}
+function exportJSON(){load();if(!leads.length){toast('No leads','err');return}download(JSON.stringify(leads,null,2),`trl-lead-os-${todayISO()}.json`,'application/json');toast('JSON exported','ok')}
+function exportCSV(){load();if(!leads.length){toast('No leads','err');return}const h=['Name','Business','Source','Status','Channel','Last contact','Next action','Next date','Offer','Notes'];const rows=leads.map(l=>[l.name,l.businessType,l.source,l.status,l.channel,l.lastContactDate,l.nextAction,l.nextActionDate,l.offer,l.notes].map(v=>`"${String(v||'').replace(/"/g,'""')}"`).join(','));download([h.join(','),...rows].join('\n'),`trl-lead-os-${todayISO()}.csv`,'text/csv');toast('CSV exported','ok')}
+function download(c,f,t){const b=new Blob([c],{type:t});const u=URL.createObjectURL(b);const a=document.createElement('a');a.href=u;a.download=f;a.click();URL.revokeObjectURL(u)}
+function importJSON(){document.getElementById('importFile').click()}
+function handleImport(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d))throw new Error('Not array');load();let added=0;d.forEach(x=>{if(!x.name)return;const i=leads.findIndex(l=>l.name===x.name&&l.source===x.source);if(i>-1)leads[i]={...leads[i],...x,id:leads[i].id};else{leads.push({...x,id:Date.now()+Math.random()});added++}});save();render();toast(`Imported ${d.length} (${added} new)`,'ok')}catch(err){toast('Import failed: '+err.message,'err')}};r.readAsText(f);e.target.value=''}
+function setDensity(v){localStorage.setItem('trl-density',v);toast('Density: '+v,'ok')}
+(function init(){
+load();updateIdentityUI();
+const onboard=localStorage.getItem(ONBOARD_KEY),auth=loadAuth(),has=!!onboard||auth.onboarded;
+const gate=document.getElementById('gate'),shell=document.getElementById('shell');
+if(!has){renderGate();gate.classList.remove('hidden');shell.style.display='none'}
+else if(auth.pass){
+renderGate();gate.classList.remove('hidden');shell.style.display='none';
+if(sessionStorage.getItem('trl-session')==='authed'){gate.classList.add('hidden');shell.style.display='block';shell.classList.add('active')}
+}else{renderGate()}
+window.addEventListener('hashchange',handleHash);window.addEventListener('popstate',handleHash);
+if(sessionStorage.getItem('trl-session')==='authed'){handleHash();render();document.getElementById('todayLabel').textContent=new Date().toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'})}
+else{if(!location.hash)history.replaceState(null,'','#leads');handleHash();render();document.getElementById('todayLabel').textContent=new Date().toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'})}
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(document.getElementById('confirmModal').classList.contains('open'))closeConfirm(false);else if(document.getElementById('modal').classList.contains('open'))closeModal();else if(document.getElementById('drawer').classList.contains('open'))toggleDrawer(false)}});
+document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal()});
+document.getElementById('confirmModal').addEventListener('click',e=>{if(e.target.id==='confirmModal')closeConfirm(false)});
+})();
+const _origUnlock=unlock;unlock=function(a){const r=_origUnlock(a);if(!document.getElementById('gate').classList.contains('hidden')===false)sessionStorage.setItem('trl-session','authed');if(document.getElementById('gate').classList.contains('hidden'))sessionStorage.setItem('trl-session','authed')};
+const _origEnter=enterAfterOnboard;enterAfterOnboard=function(){_origEnter();sessionStorage.setItem('trl-session','authed')};
+const _origQuick=quickUnlock;quickUnlock=function(){_origQuick();sessionStorage.setItem('trl-session','authed')};
+let agentRole='chief';
+function detectRole(t){t=t.toLowerCase();if(t.includes('sales')||t.includes('lead')||t.includes('message'))return 'sales';if(t.includes('content')||t.includes('brand'))return 'content';if(t.includes('build')||t.includes('code'))return 'builder';if(t.includes('loop')||t.includes('operations'))return 'ops';if(t.includes('research'))return 'research';return 'chief'}
+function setAgentRole(r){agentRole=r;document.querySelectorAll('.agent-role').forEach(el=>el.classList.toggle('active',el.dataset.role===r));document.getElementById('agentRoleLabel').textContent=r;toast('Role: '+r,'info')}
+function toggleAgent(o){const p=document.getElementById('agentPanel');if(o){p.style.display='flex';p.classList.add('open')}else{p.style.display='none';p.classList.remove('open')}}
+let agentHistory=JSON.parse(localStorage.getItem('trl-agent-history')||'[]');
+function saveAgentHistory(){localStorage.setItem('trl-agent-history',JSON.stringify(agentHistory.slice(-30)))}
+function appendBubble(t,w){const c=document.getElementById('agentChat');const e=document.getElementById('agentEmpty');if(e)e.style.display='none';const d=document.createElement('div');d.className='bubble '+(w==='user'?'bubble-user':'bubble-agent');d.style.padding='8px 10px';d.style.borderRadius='12px';d.style.fontSize='12px';d.style.maxWidth='85%';d.style.border='1px solid var(--gray-200)';if(w==='user'){d.style.marginLeft='auto';d.style.background='var(--black)';d.style.color='#fff';d.textContent=t}else{d.style.background='#fff';d.innerHTML=t.replace(/\*\*(.*?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>')}c.appendChild(d);c.scrollTop=c.scrollHeight}
+function sendAgent(){
+const input=document.getElementById('agentInput');const text=(input.value||'').trim();if(!text)return;
+const detected=detectRole(text);if(detected!==agentRole)setAgentRole(detected);
+appendBubble(text,'user');agentHistory.push({role:'user',text});input.value='';
+const chat=document.getElementById('agentChat');const typing=document.createElement('div');typing.className='bubble bubble-agent';typing.textContent='…';chat.appendChild(typing);
+setTimeout(()=>{typing.remove();const reply=generateAgentReply(text,detected);appendBubble(reply,'agent');agentHistory.push({role:'agent',text:reply});saveAgentHistory()},400);
+}
+function generateAgentReply(text,role){
+try{
+const name=getName(),total=leads.length,overdue=leads.filter(l=>(l.nextActionDate||'')<todayISO()&&!['closed-won','closed-lost'].includes(l.status)).length;
+const t=(text||'').toLowerCase();
+if(!t.trim())return `**${role} —** Empty. Try: "What should I do today?"`;
+if(role==='chief'&&t.includes('priority'))return `**Priority:** Fix ${overdue} overdue, then ${total} total at 14:00. **Next:** 1) Loop red 2) Send Day-1 to 2 leads 3) Export. **Done when:** 0 overdue.`;
+if(role==='sales'&&t.includes('day-1'))return `**Day-1:** "Hi [name], it's ${name.split(' ')[0]} — I run TRL, we build systems so enquiries never get lost. Quick question: how does follow-up happen at your business?" End with question.`;
+if(role==='ops'&&t.includes('loop'))return `**Loop:** Overdue ${overdue} · Due today ${leads.filter(l=>l.nextActionDate===todayISO()).length} · No-date ${leads.filter(l=>!l.nextActionDate).length}. Run at 14:00: overdue→today→next→no-date→export.`;
+return `**${role} — Consider/Reply/Answer:** Consider "${esc(text.slice(0,80))}" as ${role}. Reply: Full TRL memory — Gates 27 Sep/13 Oct, Hours 14:00–04:00, Leads ${total} (${overdue} overdue). Answer: Ask clearer: Chief "priority", Sales "Day-1", Content "Post 1", Builder "form", Ops "loop", Research "decision". Forward: say "Forward to [name] as WhatsApp"`;
+}catch(e){return `**Fallback (no error):** You said "${esc(text.slice(0,100))}". Try: "What should I do today?" Error: ${esc(e.message)} — recovered.`}
+}
+window.askAgentAboutLead=function(id){const l=leads.find(x=>x.id===id);if(!l)return;toggleAgent(true);setAgentRole('sales');document.getElementById('agentInput').value=`Lead: ${l.name} — ${l.businessType} — ${l.status} — next "${l.nextAction}" on ${l.nextActionDate}. What should I do?`};
+</script>
+</body>
+</html>
