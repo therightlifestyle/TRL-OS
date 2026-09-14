@@ -16,7 +16,8 @@ TRL Lead OS is The Right Lifestyle’s local-first workspace for organising lead
 | **Daily Loop** | Review overdue actions, today’s follow-ups, upcoming actions, and records without dates. |
 | **Founder’s Day** | Reference the founder’s working schedule, milestone gates, and first-week targets. |
 | **Settings** | Update your local profile and access code, change density, collapse navigation, import/export leads, and reset data. |
-| **Local assistant** | Use six role presets—Chief, Sales, Content, Builder, Ops, and Research—with rule-based replies. No AI API or external model is connected. |
+| **Automations (Flow)** | Visual When → If → Then recipes for your leads, in the same spirit as n8n, without needing to know n8n. Ready-made follow-up recipes, a simple wizard, and a node canvas. Stored in this browser only. |
+| **TRL Assistant** | Local helper for the whole workspace: today’s plan, overdue names, Daily Loop, Flow recipes, WhatsApp drafts, CRM/analytics, offers, and settings. Role chips are a lens, not a keyword gate. No AI API or external model is connected. |
 
 ## Run locally
 
@@ -43,7 +44,8 @@ The application runs as static HTML, CSS, and JavaScript. Google Fonts is option
 3. **Add a lead.** A name, next action, and next-action date are required. Add business, source, channel, offer, and notes as needed.
 4. **Explore the views.** Pipeline and CRM use the same lead collection, not separate databases.
 5. **Run the daily review.** Prioritise overdue work, review today’s follow-ups, plan upcoming actions, and give undated records a next step.
-6. **Back up your leads.** Export JSON regularly, especially before clearing browser data or resetting the workspace.
+6. **Turn on an automation (optional).** Open **Automations**. You do not need to know n8n: pick a ready-made recipe such as “Follow-up never forgets”, press **Run** to try it, then flip it **ON** if you want it to fire on the next matching event. Recipes update local leads only; they do not send WhatsApp, email, or payments.
+7. **Back up your leads.** Export JSON regularly, especially before clearing browser data or resetting the workspace.
 
 “Load sample leads” adds up to 20 placeholder records (`— Row 1` through `— Row 20`), preserving existing leads and skipping matching placeholder names. Replace these with real, non-sensitive prospect details when ready.
 
@@ -62,6 +64,16 @@ not contacted → message sent → replied → call booked → proposal sent
 The page includes warm local-business, creator, and existing-contact source options, with broader warm, cold, referral, and inbound conventions described in Settings. Source options vary between the existing controls; Settings is a reference, not a source/stage editor.
 
 The website’s offer examples are **Micro Audit ($35)**, **Automation Sprint ($499)**, and **Founder OS ($1,297)**. These are planning values in the interface, not a checkout or payment integration. PKR figures use a fixed **280 PKR per USD** approximation, not a live exchange rate. Some summary views use different fallback valuation rules, so values should be treated as planning estimates rather than accounting totals.
+
+### Automations (TRL Flow)
+
+TRL Flow is a local **When → If → Then** builder in the same family as n8n. You do not need an n8n account or any n8n knowledge.
+
+- **When:** a new lead is saved, a status changes, a lead is overdue, a next action is due today, you run Daily Loop, or you press Run.
+- **Only if (optional):** status, source, priority, channel, missing date, or deal value.
+- **Then:** update status, set next action, set priority, add a note, attach an offer, draft a WhatsApp message (clipboard only), show a reminder, or ask a local assistant role.
+
+Ready-made recipes include follow-up never forgets, Day-1 auto, replied → book the call, Daily Loop ping, high-value alert, won-deal note, and Ops agent on overdue. Recipes are stored under `trl-flows-v1` and run history under `trl-flow-runs-v1`. They stay **off** until you enable them. Automations change local lead records only; they do not send WhatsApp, email, or take payment.
 
 ### Daily cadence
 
@@ -89,7 +101,7 @@ The page’s first-week targets are **20 names, 10 conversations, and 3 audits**
 
 ### Where data lives
 
-Lead records, onboarding answers, profile details, the convenience access code, display preferences, and recent assistant messages are stored in **browser `localStorage`**. The current unlocked session uses **`sessionStorage`**. There is no backend, account service, cloud backup, team synchronisation, or server-enforced access control.
+Lead records, onboarding answers, profile details, the convenience access code, display preferences, recent assistant messages, and Flow recipes/run history are stored in **browser `localStorage`**. The current unlocked session uses **`sessionStorage`**. There is no backend, account service, cloud backup, team synchronisation, or server-enforced access control.
 
 The access code is stored in plaintext and guest access can open the same local data. **It is not a security boundary or encryption.** Do not use this version for sensitive personal, financial, medical, or confidential client information. Do not reuse a real password as the code.
 
@@ -102,7 +114,7 @@ Data is specific to the browser profile and site origin (scheme, hostname, and p
 - **Import JSON:** accepts an array and merges records with the same name and source, retaining an existing record ID. Other named records receive new IDs. Only import trusted exports; the existing importer is not a hardened schema validator.
 - **Clear all:** removes the local lead collection after confirmation.
 - **Reset onboarding:** removes local identity/onboarding state, not the lead collection.
-- **Factory reset:** removes workspace data and preferences. Export first; this cannot be undone within the application.
+- **Factory reset:** removes workspace data and preferences, including Flow recipes and run history. Export first; this cannot be undone within the application.
 
 Clipboard-based outreach helpers prepare text; they do not send WhatsApp messages. Clipboard permissions and a secure browser context may be required. No email delivery, automated notifications, scheduling integration, or payment processing is configured.
 
@@ -112,7 +124,13 @@ Clipboard-based outreach helpers prepare text; they do not send WhatsApp message
 index.html                 Existing views, workflow logic, and base styles
 assets/professional.css    Responsive visual system and density styles
 assets/workspace.js        Dynamic labels, local-data notice, keyboard enhancements
+assets/flow.css            Visual automation canvas and recipe cards
+assets/flow.js             Local When → If → Then engine, templates, wizard, canvas
+assets/assistant.css       TRL Assistant panel
+assets/assistant.js        Local workspace assistant (intents, actions, drafts)
 tests/workspace.test.cjs   DOM-based workflow regression tests
+tests/flow.test.cjs        Automation tab, templates, and engine tests
+tests/assistant.test.cjs   Assistant coverage for today, overdue, Flow, drafts
 package.json               Local server and test commands
 ```
 

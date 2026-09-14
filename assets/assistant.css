@@ -1,0 +1,44 @@
+/* TRL Assistant — workspace helper panel */
+.agent-fab{z-index:40}
+.agent-panel{
+  position:fixed;right:16px;bottom:84px;z-index:41;
+  width:min(92vw,420px);height:min(78vh,620px);
+  background:#fff;border:1px solid var(--gray-200);border-radius:18px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.18);display:none;flex-direction:column;overflow:hidden;
+}
+@media(min-width:1024px){.agent-panel{right:20px;bottom:20px}}
+.agent-panel.open{display:flex}
+.agent-head{padding:12px 12px 10px;background:linear-gradient(125deg,#14243b,#203f66);color:#fff;display:flex;align-items:center;gap:10px}
+.agent-head b{font-family:'Sora',sans-serif;font-size:13px}
+.agent-head .sub{font-size:10px;opacity:.75;font-weight:700;letter-spacing:.04em}
+.agent-snap{display:flex;gap:8px;padding:8px 10px;border-bottom:1px solid var(--gray-200);background:#f7f9fc;overflow:auto;font-size:11px;font-weight:700;color:var(--gray-600)}
+.agent-snap span{white-space:nowrap;background:#fff;border:1px solid var(--gray-200);border-radius:999px;padding:4px 8px}
+.agent-snap .bad{color:var(--red);border-color:var(--red-100);background:var(--red-50)}
+.agent-roles{display:flex;gap:6px;padding:8px;border-bottom:1px solid var(--gray-200);overflow:auto;background:var(--gray-50)}
+.agent-role{padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap;cursor:pointer;border:1px solid var(--gray-200);background:#fff;font:inherit}
+.agent-role.active{background:var(--black);color:#fff}
+.agent-chat{flex:1;overflow:auto;padding:12px;display:grid;gap:10px;align-content:start;background:#FCFCFD}
+.agent-empty{text-align:center;color:var(--gray-600);font-size:12px;line-height:1.55;padding:8px 6px 4px}
+.agent-empty b{display:block;font-size:14px;color:var(--gray-900);margin-bottom:6px;font-family:'Sora',sans-serif}
+.agent-chips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:10px}
+.agent-chip{
+  border:1px solid var(--gray-200);background:#fff;border-radius:999px;padding:7px 10px;
+  font-size:11px;font-weight:700;cursor:pointer;font:inherit;color:var(--gray-700);
+}
+.agent-chip:hover{border-color:#8eaff0;background:#eff6ff}
+.bubble{max-width:90%;padding:8px 10px;border-radius:12px;font-size:12px;line-height:1.45;border:1px solid var(--gray-200)}
+.bubble-user{margin-left:auto;background:var(--black);color:#fff;border-color:transparent}
+.bubble-agent{background:#fff}
+.bubble-agent .acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.bubble-agent .acts button{
+  border:1px solid var(--gray-200);background:var(--gray-50);border-radius:999px;padding:6px 10px;
+  font-size:11px;font-weight:800;cursor:pointer;font:inherit;
+}
+.bubble-agent .acts button:hover{background:#eff6ff;border-color:#8eaff0}
+.agent-input{padding:10px;border-top:1px solid var(--gray-200);display:flex;gap:8px;background:#fff}
+.agent-input textarea{flex:1;padding:8px 10px;border:1px solid var(--gray-200);border-radius:10px;resize:none;font-size:12px;font:inherit}
+.agent-input button.send{width:40px;height:40px;border-radius:10px;background:var(--blue);color:#fff;border:none;cursor:pointer;font-weight:800}
+.agent-close{background:rgba(255,255,255,0.12);border:none;color:#fff;width:28px;height:28px;border-radius:8px;cursor:pointer;margin-left:auto}
+@media(max-width:600px){
+  .agent-panel{right:8px;left:8px;width:auto;bottom:72px;height:min(70vh,560px)}
+}
