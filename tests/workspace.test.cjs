@@ -14,7 +14,7 @@ function boot(t, hash = "") {
 }
 test('onboarding has honest local-data disclosure and labelled controls', async t => {
   const w = boot(t);
-  assert.match(w.document.title, /TRL Lead OS/);
+  assert.equal(w.document.title, 'TRL Lead OS');
   assert.match(w.document.querySelector('.local-notice').textContent, /not secure authentication/);
   w.nextOnboard();
   await new Promise(r => setImmediate(r));
