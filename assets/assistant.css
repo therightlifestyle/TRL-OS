@@ -14,9 +14,6 @@
 .agent-snap{display:flex;gap:8px;padding:8px 10px;border-bottom:1px solid var(--gray-200);background:#f7f9fc;overflow:auto;font-size:11px;font-weight:700;color:var(--gray-600)}
 .agent-snap span{white-space:nowrap;background:#fff;border:1px solid var(--gray-200);border-radius:999px;padding:4px 8px}
 .agent-snap .bad{color:var(--red);border-color:var(--red-100);background:var(--red-50)}
-.agent-roles{display:flex;gap:6px;padding:8px;border-bottom:1px solid var(--gray-200);overflow:auto;background:var(--gray-50)}
-.agent-role{padding:6px 10px;border-radius:999px;font-size:11px;font-weight:800;white-space:nowrap;cursor:pointer;border:1px solid var(--gray-200);background:#fff;font:inherit}
-.agent-role.active{background:var(--black);color:#fff}
 .agent-chat{flex:1;overflow:auto;padding:12px;display:grid;gap:10px;align-content:start;background:#FCFCFD}
 .agent-empty{text-align:center;color:var(--gray-600);font-size:12px;line-height:1.55;padding:8px 6px 4px}
 .agent-empty b{display:block;font-size:14px;color:var(--gray-900);margin-bottom:6px;font-family:'Sora',sans-serif}

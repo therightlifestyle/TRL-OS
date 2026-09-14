@@ -7,7 +7,6 @@
   const CHANNELS = ['WhatsApp','Email','Phone','In-person'];
   const PRIORITIES = ['High','Medium','Low'];
   const OFFERS = ['Micro Audit $35','Automation Sprint $499','Founder OS $1,297'];
-  const ROLES = ['chief','sales','content','builder','ops','research'];
 
   const NODES = {
     'trigger.newLead': { kind:'trigger', group:'When', title:'New lead added', hint:'Starts when you save a brand-new lead.', icon:'＋', accent:'#34d399', inputs:[], outputs:['out'], fields:[] },
@@ -28,12 +27,10 @@
     'action.addNote': { kind:'action', group:'Then', title:'Add a note', hint:'Append a timestamped note on the lead.', icon:'→', accent:'#60a5fa', inputs:['in'], outputs:['out'], fields:[{key:'note', label:'Note', type:'textarea', placeholder:'Followed up from Flow'}] },
     'action.setOffer': { kind:'action', group:'Then', title:'Set offer', hint:'Attach a TRL offer to the lead.', icon:'→', accent:'#60a5fa', inputs:['in'], outputs:['out'], fields:[{key:'offer', label:'Offer', type:'offer'}] },
     'action.draftWA': { kind:'action', group:'Then', title:'Draft WhatsApp', hint:'Prepare a Day-1 style message. Copies when you run it.', icon:'→', accent:'#60a5fa', inputs:['in'], outputs:['out'], fields:[{key:'template', label:'Message (use {{name}} {{business}} {{me}})', type:'textarea', placeholder:''}] },
-    'action.toast': { kind:'action', group:'Then', title:'Show a reminder', hint:'Pop a reminder in this workspace.', icon:'→', accent:'#60a5fa', inputs:['in'], outputs:['out'], fields:[{key:'message', label:'Reminder', type:'text', placeholder:'Check overdue leads'}] },
-    'action.askAgent': { kind:'action', group:'Agents', title:'Ask TRL Assistant', hint:'Run a local role preset against this lead. No AI API.', icon:'✦', accent:'#c084fc', inputs:['in'], outputs:['out'], fields:[{key:'role', label:'Role', type:'role'},{key:'prompt', label:'Ask (optional)', type:'text', placeholder:'What should I do next?'}] },
-    'action.routeAgent': { kind:'action', group:'Agents', title:'Ask the right agent', hint:'Sales for outreach, Ops for overdue, Chief otherwise.', icon:'✦', accent:'#c084fc', inputs:['in'], outputs:['out'], fields:[] }
+    'action.toast': { kind:'action', group:'Then', title:'Show a reminder', hint:'Pop a reminder in this workspace.', icon:'→', accent:'#60a5fa', inputs:['in'], outputs:['out'], fields:[{key:'message', label:'Reminder', type:'text', placeholder:'Check overdue leads'}] }
   };
 
-  const GROUPS = ['When','Only if','Then','Agents'];
+  const GROUPS = ['When','Only if','Then'];
 
   function nid(){ return 'n'+Math.random().toString(36).slice(2,9); }
   function wid(){ return 'w'+Math.random().toString(36).slice(2,9); }
@@ -95,7 +92,7 @@
     {
       id:'daily-ping',
       name:'Daily Loop ping',
-      blurb:'When you run the 14:00 check, remind yourself how many leads are overdue.',
+      blurb:'When you run Daily Loop, remind yourself how many leads are overdue.',
       pipe:[['w','Daily Loop'],['t','Show reminder']],
       build(){ return linear(
         ['trigger.dailyLoop','action.toast'],
@@ -134,16 +131,6 @@
         [{status:'closed-won'}, {note:'Closed-won — send invoice / start delivery. Logged by Flow.'}]
       ); }
     },
-    {
-      id:'agent-overdue',
-      name:'Ops agent on overdue',
-      blurb:'Overdue leads go to the Ops assistant for a local next-step suggestion.',
-      pipe:[['w','Overdue'],['t','Ask Ops agent']],
-      build(){ return linear(
-        ['trigger.overdue','action.askAgent'],
-        [{}, {role:'ops', prompt:'This lead is overdue. What should I do in the 10-minute loop?'}]
-      ); }
-    }
   ];
 
   const ui = {
@@ -193,7 +180,7 @@
     return !!(l.nextActionDate && l.nextActionDate < todayISO() && !['closed-won','closed-lost'].includes(l.status));
   }
   function interpolate(str, lead){
-    const me = (typeof window.getName === 'function' ? window.getName() : 'Builder').split(' ')[0];
+    const me = (typeof window.getName === 'function' ? window.getName() : 'You').split(' ')[0];
     return String(str || '')
       .replace(/\{\{name\}\}/gi, lead.name || '')
       .replace(/\{\{business\}\}/gi, lead.businessType || 'your business')
@@ -202,9 +189,9 @@
       .replace(/\{\{me\}\}/gi, me);
   }
   function defaultWA(lead){
-    const me = (typeof window.getName === 'function' ? window.getName() : 'Builder').split(' ')[0];
+    const me = (typeof window.getName === 'function' ? window.getName() : 'You').split(' ')[0];
     const first = (lead.name || 'there').split(' ')[0];
-    return `Hi ${first}, it's ${me} — I run TRL, we build simple systems so enquiries never get lost. Quick question: when someone reaches out to ${lead.businessType || 'your business'}, how does follow-up happen?`;
+    return `Hi ${first}, it's ${me} — I build simple systems so enquiries never get lost. Quick question: when someone reaches out to ${lead.businessType || 'your business'}, how does follow-up happen?`;
   }
 
   function triggerMatches(node, ctx){
@@ -285,27 +272,6 @@
         detail.text = interpolate(c.message || 'Flow ran', lead);
         if (!ctx.preview && !ctx.silentToast) toast(detail.text, 'info');
         return { detail, mutated:false };
-      case 'action.askAgent':
-      case 'action.routeAgent': {
-        let role = c.role || 'chief';
-        if (node.type === 'action.routeAgent') {
-          if (isOverdue(lead)) role = 'ops';
-          else if (['not contacted','message sent'].includes(lead.status)) role = 'sales';
-          else role = 'chief';
-        }
-        const prompt = interpolate(c.prompt || `Lead: ${lead.name} — ${lead.status} — next "${lead.nextAction}". What should I do?`, lead);
-        let reply = '';
-        if (typeof window.generateAgentReply === 'function') {
-          try { reply = window.generateAgentReply(prompt, role); } catch (e) { reply = String(e.message || e); }
-        } else {
-          reply = role + ' — ' + prompt;
-        }
-        detail.text = reply;
-        detail.role = role;
-        const stamp = todayISO() + ' · ' + role + ' agent: ' + String(reply).replace(/<[^>]+>/g,'').slice(0, 280);
-        lead.notes = lead.notes ? (lead.notes + '\n' + stamp) : stamp;
-        return { detail, mutated:true };
-      }
       default:
         detail.text = 'Unknown action';
         return { detail, mutated:false };
@@ -539,13 +505,13 @@
     const list = store.workflows;
     el.innerHTML = `
       <div class="flow-hero">
-        <div class="flow-kicker">TRL Flow · Agent automation</div>
+        <div class="flow-kicker">TRL Flow · Automations</div>
         <h2>When this happens, do that.<br>No n8n knowledge needed.</h2>
         <p>n8n is a tool where you connect boxes: <b>when</b> something happens, <b>then</b> something else runs. TRL Flow is that idea, built for your leads, inside this browser. Nothing is sent to the cloud.</p>
         <div class="flow-steps">
           <div class="flow-step"><span class="flow-chip when">1 · WHEN</span><b>A lead event</b><span>New lead, overdue, status change, or you press Run.</span></div>
           <div class="flow-step"><span class="flow-chip iff">2 · ONLY IF</span><b>An optional filter</b><span>Skip unless status, source, or value matches.</span></div>
-          <div class="flow-step"><span class="flow-chip then">3 · THEN</span><b>An action</b><span>Update the lead, draft WhatsApp, or ask a TRL agent.</span></div>
+          <div class="flow-step"><span class="flow-chip then">3 · THEN</span><b>An action</b><span>Update the lead, draft a message, or show a reminder.</span></div>
         </div>
       </div>
       <div class="flow-toolbar-home">
@@ -596,12 +562,12 @@
         <p>People use n8n to connect Gmail, Slack, Sheets, CRMs… TRL Flow uses the same picture — boxes and lines — but only talks to <b>your local leads</b>. There is no account, no cloud, and no API key.</p>
         <div class="flow-vs">
           <div><b>n8n</b>Hundreds of apps. You host it or pay for cloud. Powerful, easy to get lost.</div>
-          <div><b>TRL Flow</b>Your pipeline only. Recipes for follow-ups, status, WhatsApp drafts, and the six local agents.</div>
+          <div><b>TRL Flow</b>Your pipeline only. Recipes for follow-ups, status, and message drafts.</div>
         </div>
         <h3>How to use it</h3>
         <ol>
           <li><b>Pick a recipe</b> on the Flows tab — it is added but switched OFF, so nothing surprises you.</li>
-          <li><b>Press Edit</b> to see the boxes. Green = when, yellow = only if, blue = then, purple = agent.</li>
+          <li><b>Press Edit</b> to see the boxes. Green = when, yellow = only if, blue = then.</li>
           <li><b>Press Run</b> to try it on matching leads right now. Watch the run history.</li>
           <li><b>Flip the toggle ON</b> if you want it to fire automatically next time that event happens (new lead, status change, Daily Loop check).</li>
         </ol>
@@ -663,7 +629,7 @@
         </div>
         ${step===1?`<div><b>When should this run?</b><p style="font-size:12px;color:var(--gray-500);margin:4px 0 10px">Pick the starting moment. You can change it later on the canvas.</p>${picks(triggerList, w.trigger, 'trigger')}</div>`:''}
         ${step===2?`<div><b>Only run if… (optional)</b><p style="font-size:12px;color:var(--gray-500);margin:4px 0 10px">Skip this to always continue after the trigger.</p>${picks(condList, w.condition, 'condition')}${w.condition?`<div style="margin-top:12px;display:grid;gap:8px">${fieldsFor(w.condition)}</div>`:''}</div>`:''}
-        ${step===3?`<div><b>Then do what?</b><p style="font-size:12px;color:var(--gray-500);margin:4px 0 10px">This is the action that updates a lead, drafts a message, or asks an agent.</p>${picks(actionList, w.action, 'action')}<div style="margin-top:12px;display:grid;gap:8px">${fieldsFor(w.action)}</div></div>`:''}
+        ${step===3?`<div><b>Then do what?</b><p style="font-size:12px;color:var(--gray-500);margin:4px 0 10px">This is the action that updates a lead or drafts a message.</p>${picks(actionList, w.action, 'action')}<div style="margin-top:12px;display:grid;gap:8px">${fieldsFor(w.action)}</div></div>`:''}
         ${step===4?`<div class="field"><label>Name this flow</label><input class="input" value="${esc(w.name)}" oninput="TRLFlow.wizName(this.value)" placeholder="e.g. Overdue WhatsApp nudge"></div>
           <div style="padding:12px;background:var(--gray-50);border-radius:12px;font-size:13px">
             <b>Recipe preview</b>
@@ -686,7 +652,7 @@
     const label = `<label>${esc(f.label||f.key)}</label>`;
     if (f.type === 'textarea') return `<div class="field">${label}<textarea class="input" oninput="${onchange}">${esc(v)}</textarea></div>`;
     if (f.type === 'number') return `<div class="field">${label}<input class="input" type="number" value="${esc(v)}" oninput="${onchange}" placeholder="${esc(f.placeholder||'')}"></div>`;
-    const opts = f.type==='status'?STATUSES:f.type==='source'?SOURCES:f.type==='channel'?CHANNELS:f.type==='priority'?PRIORITIES:f.type==='offer'?OFFERS:f.type==='role'?ROLES:null;
+    const opts = f.type==='status'?STATUSES:f.type==='source'?SOURCES:f.type==='channel'?CHANNELS:f.type==='priority'?PRIORITIES:f.type==='offer'?OFFERS:null;
     if (opts) {
       return `<div class="field">${label}<select class="input" onchange="${onchange}"><option value="">Choose</option>${opts.map(o=>`<option ${String(v)===String(o)?'selected':''}>${esc(o)}</option>`).join('')}</select></div>`;
     }
@@ -775,7 +741,7 @@
         <div class="flow-node-bar" style="background:${m.accent}"></div>
         ${m.inputs.length ? `<div class="flow-port in" data-port="in" data-node="${node.id}"></div>` : ''}
         <div class="flow-node-body">
-          <div class="flow-node-kind">${m.kind === 'trigger' ? 'WHEN' : m.kind === 'condition' ? 'ONLY IF' : m.group === 'Agents' ? 'AGENT' : 'THEN'}</div>
+          <div class="flow-node-kind">${m.kind === 'trigger' ? 'WHEN' : m.kind === 'condition' ? 'ONLY IF' : 'THEN'}</div>
           <div class="flow-node-title">${esc(m.title)}</div>
           <div class="flow-node-sub">${esc(sub)}</div>
         </div>

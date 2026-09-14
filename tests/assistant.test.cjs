@@ -39,7 +39,7 @@ test('assistant answers today, overdue, flow and drafts without keyword gates', 
   const draft = w.generateAgentReply('draft a Day-1 WhatsApp', 'sales');
   assert.match(draft, /Hi /);
   assert.match(draft, /does not send WhatsApp/);
-  const help = w.generateAgentReply('what can you help with?', 'chief');
+  const help = w.generateAgentReply('what can you help with?');
   assert.match(help, /pipeline/i);
   assert.match(help, /Flow/);
 });
